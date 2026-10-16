@@ -1,6 +1,8 @@
 import { groupByStore, itemPrice, totalPrice, type Store } from '@foodfinder/shared';
 import { formatNumber, formatPrice } from '../format';
+import { RohlikLink } from '../components/RohlikLink';
 import { STORE_LABELS } from '../labels';
+import { rohlikSearchTerm } from '../rohlik';
 import type { ShoppingList } from '../store/shoppingList';
 
 export function Seznam({ list }: { list: ShoppingList }) {
@@ -27,14 +29,15 @@ export function Seznam({ list }: { list: ShoppingList }) {
                   <li key={i.id} className={i.checked ? 'done' : undefined}>
                     <label>
                       <input type="checkbox" checked={i.checked} onChange={() => toggle(i.id)} />
-                      <span className="label">{i.label}</span>
+                      <span className="label-block">
+                        <span className="label">{i.label}</span>
+                        {i.grams !== undefined && <span className="muted small">{formatNumber(i.grams)} g</span>}
+                      </span>
                     </label>
-                    <span className="muted small">
-                      {i.grams !== undefined ? `${formatNumber(i.grams)} g` : ''}
-                    </span>
                     <span className="item-price">
                       {price !== undefined ? `${i.estimated ? '~' : ''}${formatPrice(price)}` : '–'}
                     </span>
+                    <RohlikLink compact term={i.searchTerm ?? rohlikSearchTerm(i.label)} />
                     <button className="icon" aria-label={`Smazat ${i.label}`} onClick={() => remove(i.id)}>✕</button>
                   </li>
                 );

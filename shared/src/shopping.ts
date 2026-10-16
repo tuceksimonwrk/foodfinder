@@ -4,6 +4,8 @@ import type { Offer, Store } from './types';
 export interface ListItem {
   id: string;
   label: string;
+  /** What to search for in an online shop; the plain ingredient for planned meals (falls back to the label). */
+  searchTerm?: string;
   grams?: number;
   store?: Store;
   offerId?: string;

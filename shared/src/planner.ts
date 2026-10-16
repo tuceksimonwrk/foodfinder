@@ -419,6 +419,7 @@ export function ingredientsToListItems(p: PricedRecipe, makeId: () => string = r
   return p.ingredients.map((i) => ({
     id: makeId(),
     label: i.offer?.name ?? i.generic,
+    searchTerm: i.generic,
     grams: i.grams,
     store: i.offer?.store,
     offerId: i.offer?.id,

@@ -429,9 +429,9 @@ describe('ingredientsToListItems', () => {
     const items = ingredientsToListItems(priceRecipe(R1, OFFERS, {}), () => `id-${++n}`);
     expect(items).toHaveLength(2);
     expect(items[0]).toMatchObject({
-      id: 'id-1', label: 'Kuřecí prsní řízky', grams: 200, store: 'lidl', offerId: 'o1', pricePerKg: 150, estimated: false, checked: false,
+      id: 'id-1', label: 'Kuřecí prsní řízky', searchTerm: 'kuřecí prsa', grams: 200, store: 'lidl', offerId: 'o1', pricePerKg: 150, estimated: false, checked: false,
     });
-    expect(items[1]).toMatchObject({ label: 'rýže', grams: 100, estimated: true, pricePerKg: 50 });
+    expect(items[1]).toMatchObject({ label: 'rýže', searchTerm: 'rýže', grams: 100, estimated: true, pricePerKg: 50 });
     expect(items[1].store).toBeUndefined();
   });
   it('lists the scaled amounts', () => {

@@ -4,6 +4,7 @@ import {
   type ListItem, type Offer, type PlanMode, type PlanResult, type PriceBook, type PricedRecipe, type Recipe,
 } from '@foodfinder/shared';
 import { Meter } from '../components/Meter';
+import { RohlikLink } from '../components/RohlikLink';
 import { formatNumber, formatPrice, formatScale } from '../format';
 import { STORE_LABELS } from '../labels';
 import { newId } from '../store/shoppingList';
@@ -199,6 +200,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
                         {formatNumber(i.grams)} g {i.offer?.name ?? i.generic}
                         {i.offer ? ` (${STORE_LABELS[i.offer.store]}, ${formatPrice(i.cost)})` : ` (odhad ~${formatPrice(i.cost)})`}
                         {i.discountPct !== undefined && <span className="deal-pct">−{i.discountPct} %</span>}
+                        {' '}<RohlikLink term={i.generic} />
                       </li>
                     ))}
                   </ul>
