@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatNumber, formatPrice, formatValidTo, formatValidity } from './format';
+import { formatNumber, formatPrice, formatScale, formatValidTo, formatValidity } from './format';
 
 describe('format', () => {
   it('formats prices with a decimal comma', () => expect(formatPrice(19.9)).toBe('19,90 Kč'));
@@ -14,4 +14,12 @@ describe('format', () => {
     expect(formatValidity({ validFrom: '2026-10-10', validTo: '2026-10-20' }, '2026-10-16')).toBe('do 20. 10.'));
   it('shows the start date for an offer that has not started', () =>
     expect(formatValidity({ validFrom: '2026-10-22', validTo: '2026-10-25' }, '2026-10-16')).toBe('od 22. 10. do 25. 10.'));
+
+  it('formats a portion factor with up to two decimals', () => {
+    expect(formatScale(1)).toBe('1');
+    expect(formatScale(1.25)).toBe('1,25');
+    expect(formatScale(1.5)).toBe('1,5');
+    expect(formatScale(0.7)).toBe('0,7');
+    expect(formatScale(0.8500000000000001)).toBe('0,85');
+  });
 });

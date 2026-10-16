@@ -9,9 +9,9 @@ const recipes: Recipe[] = JSON.parse(
 );
 
 describe('recipes.json', () => {
-  it('contains 30–40 recipes with unique ids', () => {
-    expect(recipes.length).toBeGreaterThanOrEqual(30);
-    expect(recipes.length).toBeLessThanOrEqual(40);
+  it('contains 50–70 recipes with unique ids', () => {
+    expect(recipes.length).toBeGreaterThanOrEqual(50);
+    expect(recipes.length).toBeLessThanOrEqual(70);
     expect(new Set(recipes.map((r) => r.id)).size).toBe(recipes.length);
   });
 
@@ -51,5 +51,42 @@ describe('recipes.json', () => {
     );
     expect(plan.days).toHaveLength(7);
     expect(plan.days.every((d) => d.meals.length === 4)).toBe(true);
+  });
+
+  it('offers enough recipes for every course to keep a week varied', () => {
+    const count = (tag: string) => recipes.filter((r) => r.tags.includes(tag)).length;
+    expect(count('snidane')).toBeGreaterThanOrEqual(12);
+    expect(count('obed')).toBeGreaterThanOrEqual(25);
+    expect(count('vecere')).toBeGreaterThanOrEqual(25);
+    expect(count('svacina')).toBeGreaterThanOrEqual(14);
+  });
+
+  it('only uses the known course tags', () => {
+    const known = new Set(['snidane', 'obed', 'vecere', 'svacina']);
+    for (const r of recipes) {
+      expect(r.tags.length, r.id).toBeGreaterThan(0);
+      for (const t of r.tags) expect(known.has(t), `${r.id}: ${t}`).toBe(true);
+    }
+  });
+
+  it('hits the calorie target within ±5 % for realistic targets and meal counts', () => {
+    for (const [kcal, meals] of [[1600, 4], [1900, 4], [2200, 4], [2500, 5], [2800, 5], [3000, 6]] as const) {
+      const plan = generatePlan(
+        { kcal, proteinMin: Math.round(kcal * 0.065), fatMax: Math.round(kcal * 0.04), meals, days: 1, excluded: [] }, recipes, [], {},
+      );
+      const day = plan.days[0];
+      expect(Math.abs(day.kcal / kcal - 1), `${kcal} kcal in ${meals} meals -> ${Math.round(day.kcal)}`).toBeLessThanOrEqual(0.05);
+      expect(plan.issues, `${kcal}/${meals}`).toEqual([]);
+    }
+  });
+
+  it('serves a real week with at least 30 different recipes and no recipe more than twice', () => {
+    const plan = generatePlan(
+      { kcal: 2200, proteinMin: 150, fatMax: 70, meals: 5, days: 7, excluded: [] }, recipes, [], {},
+    );
+    const uses: Record<string, number> = {};
+    plan.days.forEach((d) => d.meals.forEach((m) => (uses[m.recipe.id] = (uses[m.recipe.id] ?? 0) + 1)));
+    expect(Object.keys(uses).length).toBeGreaterThanOrEqual(30);
+    expect(Math.max(...Object.values(uses))).toBeLessThanOrEqual(2);
   });
 });

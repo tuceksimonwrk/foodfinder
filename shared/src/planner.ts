@@ -6,6 +6,9 @@ import type { Ingredient, Offer, Recipe } from './types';
 /** generic ingredient name -> last known price in Kč/kg */
 export type PriceBook = Record<string, number>;
 
+/** A course of the day. Recipes carry these as tags. */
+export type MealSlot = 'snidane' | 'obed' | 'vecere' | 'svacina';
+
 export interface PricedIngredient {
   generic: string;
   grams: number;
@@ -24,6 +27,12 @@ export interface PricedRecipe {
   fat: number;
   carbs: number;
   estimated: boolean;
+  /** Portion factor applied to the recipe's amounts (1 = the recipe as written). */
+  scale: number;
+  /** Generic name of the ingredient that brings the most protein. */
+  mainProtein: string;
+  slot?: MealSlot;
+  slotLabel?: string;
 }
 
 export interface PlanInput {
@@ -42,6 +51,8 @@ export interface DayPlan {
   protein: number;
   fat: number;
   cost: number;
+  /** One portion factor for the whole day, chosen so the calories land on the target. */
+  scale: number;
 }
 
 export interface PlanResult {
@@ -51,13 +62,60 @@ export interface PlanResult {
   issues: string[];
 }
 
+export const SCALE_MIN = 0.7;
+export const SCALE_MAX = 1.5;
+const SCALE_STEP = 0.05;
 const KCAL_TOLERANCE = 0.05;
-const REPEAT_PENALTY = 1.2;
-const SHORTLIST_SIZE = 12;
-/** Upper bound on evaluated combinations per day so large recipe books cannot stall the UI. */
-const MAX_COMBOS = 300_000;
+/** Upper bounds on evaluated combinations per day so large recipe books cannot stall the UI. */
+const MAX_COMBOS = 200_000;
+const MAX_COMBOS_WIDE = 400_000;
 
-function priceIngredient(ing: Ingredient, offers: Offer[], priceBook: PriceBook): PricedIngredient {
+// ---------- courses ----------
+
+const SLOTS_UP_TO_SIX: Record<number, MealSlot[]> = {
+  1: ['obed'],
+  2: ['snidane', 'vecere'],
+  3: ['snidane', 'obed', 'vecere'],
+  4: ['snidane', 'obed', 'svacina', 'vecere'],
+  5: ['snidane', 'svacina', 'obed', 'svacina', 'vecere'],
+  6: ['snidane', 'svacina', 'obed', 'svacina', 'vecere', 'svacina'],
+};
+
+/** Courses of a day in time order: breakfast, lunch and dinner first, further meals are snacks. */
+export function mealSlots(count: number): MealSlot[] {
+  const n = Math.floor(count);
+  if (!(n >= 1)) return [];
+  if (n <= 6) return [...SLOTS_UP_TO_SIX[n]];
+  return [...SLOTS_UP_TO_SIX[6], ...Array<MealSlot>(n - 6).fill('svacina')];
+}
+
+export function slotLabels(slots: MealSlot[]): string[] {
+  let lunchSeen = false;
+  let dinnerSeen = false;
+  return slots.map((slot) => {
+    if (slot === 'snidane') return 'Snídaně';
+    if (slot === 'obed') {
+      lunchSeen = true;
+      return 'Oběd';
+    }
+    if (slot === 'vecere') {
+      dinnerSeen = true;
+      return 'Večeře';
+    }
+    return !lunchSeen ? 'Dopolední svačina' : !dinnerSeen ? 'Odpolední svačina' : 'Pozdní svačina';
+  });
+}
+
+/** Share of the day's calories a course should bring (normalized over the day's courses). */
+const SLOT_WEIGHT: Record<MealSlot, number> = { snidane: 0.25, obed: 0.35, vecere: 0.3, svacina: 0.1 };
+
+const SLOT_NOUN: Record<MealSlot, string> = { snidane: 'snídaně', obed: 'oběd', vecere: 'večeři', svacina: 'svačiny' };
+
+// ---------- pricing ----------
+
+const roundGrams = (g: number) => Math.max(5, Math.round(g / 5) * 5);
+
+function priceIngredient(ing: Ingredient, offers: Offer[], priceBook: PriceBook, scale = 1): PricedIngredient {
   let best: Offer | undefined;
   for (const o of offers) {
     if (o.pricePerKg === undefined) continue;
@@ -65,20 +123,30 @@ function priceIngredient(ing: Ingredient, offers: Offer[], priceBook: PriceBook)
     if (!best || o.pricePerKg < best.pricePerKg!) best = o;
   }
   const pricePerKg = best?.pricePerKg ?? priceBook[ing.generic] ?? ing.fallbackPricePerKg;
+  const grams = scale === 1 ? ing.grams : roundGrams(ing.grams * scale);
   return {
     generic: ing.generic,
-    grams: ing.grams,
+    grams,
     pricePerKg,
-    cost: (ing.grams / 1000) * pricePerKg,
+    cost: (grams / 1000) * pricePerKg,
     offer: best,
     estimated: best === undefined,
   };
 }
 
-export function priceRecipe(recipe: Recipe, offers: Offer[], priceBook: PriceBook): PricedRecipe {
-  const ingredients = recipe.ingredients.map((i) => priceIngredient(i, offers, priceBook));
+function mainProteinOf(recipe: Recipe): string {
+  let best = recipe.ingredients[0];
+  for (const i of recipe.ingredients) {
+    if (i.grams * i.per100g.protein > best.grams * best.per100g.protein) best = i;
+  }
+  return best?.generic ?? '';
+}
+
+/** Prices a recipe at a portion factor; grams of scaled portions are rounded to 5 g. */
+export function priceRecipe(recipe: Recipe, offers: Offer[], priceBook: PriceBook, scale = 1): PricedRecipe {
+  const ingredients = recipe.ingredients.map((i) => priceIngredient(i, offers, priceBook, scale));
   const sum = (pick: (i: Ingredient) => number) =>
-    recipe.ingredients.reduce((acc, i) => acc + (i.grams / 100) * pick(i), 0);
+    recipe.ingredients.reduce((acc, i, idx) => acc + (ingredients[idx].grams / 100) * pick(i), 0);
   return {
     recipe,
     ingredients,
@@ -88,6 +156,8 @@ export function priceRecipe(recipe: Recipe, offers: Offer[], priceBook: PriceBoo
     fat: sum((i) => i.per100g.fat),
     carbs: sum((i) => i.per100g.carbs),
     estimated: ingredients.some((i) => i.estimated),
+    scale,
+    mainProtein: mainProteinOf(recipe),
   };
 }
 
@@ -102,21 +172,19 @@ function isExcluded(recipe: Recipe, excluded: string[]): boolean {
   );
 }
 
-function combinations(n: number, k: number): number {
-  let result = 1;
-  for (let i = 1; i <= k; i++) result = (result * (n - k + i)) / i;
-  return result;
-}
+// ---------- search ----------
 
 interface Candidate {
   priced: PricedRecipe;
-  adjustedCost: number;
+  /** Penalty for recipes already served this week or yesterday. */
+  repeat: number;
 }
 
 interface Choice {
   meals: Candidate[];
+  scale: number;
   violation: number;
-  cost: number;
+  score: number;
 }
 
 function violation(kcal: number, protein: number, fat: number, input: PlanInput): number {
@@ -130,27 +198,56 @@ function better(a: Choice, b: Choice | null): boolean {
   if (!b) return true;
   if ((a.violation > 0) !== (b.violation > 0)) return a.violation === 0;
   if (a.violation > 0 && a.violation !== b.violation) return a.violation < b.violation;
-  return a.cost < b.cost;
+  return a.score < b.score;
 }
 
-function search(pool: Candidate[], k: number, input: PlanInput): Choice | null {
-  if (pool.length < k) return null;
-  let best: Choice | null = null;
-  const picked: number[] = [];
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+const comboLimit = (slots: number, budget: number, cap: number) =>
+  clamp(Math.floor(Math.pow(budget, 1 / Math.max(slots, 1))), 3, cap);
 
-  const visit = (start: number, kcal: number, protein: number, fat: number, cost: number) => {
-    if (picked.length === k) {
-      const choice: Choice = { meals: [], violation: violation(kcal, protein, fat, input), cost };
+/** Candidates for one course, best first: calories close to the course's share, little repeated lately. */
+function shortlist(pool: Candidate[], targetKcal: number, size: number): Candidate[] {
+  const fit = (c: Candidate) => Math.abs(Math.log(Math.max(c.priced.kcal, 50) / Math.max(targetKcal, 50)));
+  return [...pool].sort((a, b) => fit(a) + a.repeat - (fit(b) + b.repeat)).slice(0, size);
+}
+
+function search(lists: Candidate[][], slots: MealSlot[], shares: number[], input: PlanInput): Choice | null {
+  const n = lists.length;
+  const picked: Candidate[] = [];
+  let best: Choice | null = null;
+
+  const visit = (i: number, kcal: number, protein: number, fat: number, cost: number) => {
+    if (i === n) {
+      const scale = clamp(Math.round(input.kcal / kcal / SCALE_STEP) * SCALE_STEP, SCALE_MIN, SCALE_MAX);
+      const v = violation(kcal * scale, protein * scale, fat * scale, input);
+
+      let shape = 0;
+      let repeat = 0;
+      for (let k = 0; k < n; k++) {
+        const want = shares[k] * input.kcal;
+        shape += Math.pow((picked[k].priced.kcal * scale - want) / want, 2);
+        repeat += picked[k].repeat;
+      }
+      shape /= n;
+
+      const proteins = picked.map((c) => c.priced.mainProtein);
+      const duplicates = n - new Set(proteins).size;
+      const lunch = slots.indexOf('obed');
+      const dinner = slots.indexOf('vecere');
+      const sameMain = lunch >= 0 && dinner >= 0 && proteins[lunch] === proteins[dinner] ? 1 : 0;
+
+      const score = cost * scale * (1 + 0.5 * Math.abs(Math.log(scale)) + 0.4 * shape + repeat + 0.1 * duplicates + 0.5 * sameMain);
+      const choice: Choice = { meals: [], scale, violation: v, score };
       if (better(choice, best)) {
-        choice.meals = picked.map((i) => pool[i]);
+        choice.meals = [...picked];
         best = choice;
       }
       return;
     }
-    for (let i = start; i <= pool.length - (k - picked.length); i++) {
-      const p = pool[i];
-      picked.push(i);
-      visit(i + 1, kcal + p.priced.kcal, protein + p.priced.protein, fat + p.priced.fat, cost + p.adjustedCost);
+    for (const c of lists[i]) {
+      if (picked.some((p) => p.priced.recipe.id === c.priced.recipe.id)) continue;
+      picked.push(c);
+      visit(i + 1, kcal + c.priced.kcal, protein + c.priced.protein, fat + c.priced.fat, cost + c.priced.cost);
       picked.pop();
     }
   };
@@ -158,16 +255,67 @@ function search(pool: Candidate[], k: number, input: PlanInput): Choice | null {
   return best;
 }
 
-function capPool(pool: Candidate[], k: number): Candidate[] {
-  let size = pool.length;
-  while (size > k && combinations(size, k) > MAX_COMBOS) size--;
-  return pool.slice(0, size);
+interface DayResult {
+  meals: PricedRecipe[];
+  scale: number;
+}
+
+function planDay(
+  slots: MealSlot[],
+  pool: PricedRecipe[],
+  input: PlanInput,
+  uses: Map<string, number>,
+  yesterday: Set<string>,
+  offers: Offer[],
+  priceBook: PriceBook,
+): DayResult | null {
+  const weights = slots.map((s) => SLOT_WEIGHT[s]);
+  const total = weights.reduce((a, b) => a + b, 0);
+  const shares = weights.map((w) => w / total);
+
+  const toCandidate = (p: PricedRecipe): Candidate => ({
+    priced: p,
+    repeat: 0.25 * (uses.get(p.recipe.id) ?? 0) + (yesterday.has(p.recipe.id) ? 0.25 : 0),
+  });
+  const all = pool.map(toCandidate);
+  const tagged = (kind: MealSlot) => all.filter((c) => c.priced.recipe.tags.includes(kind));
+
+  const run = (size: number, restrictToTags: boolean): Choice | null => {
+    const lists = slots.map((kind, i) => {
+      const own = restrictToTags ? tagged(kind) : [];
+      return shortlist(own.length ? own : all, shares[i] * input.kcal, size);
+    });
+    return search(lists, slots, shares, input);
+  };
+
+  const narrow = comboLimit(slots.length, MAX_COMBOS, 12);
+  let choice = run(narrow, true);
+  if (!choice || choice.violation > 0) {
+    const wide = run(comboLimit(slots.length, MAX_COMBOS_WIDE, 20), true);
+    if (wide && better(wide, choice)) choice = wide;
+  }
+  // Courses without enough distinct tagged recipes: let any recipe fill in.
+  if (!choice) choice = run(comboLimit(slots.length, MAX_COMBOS, 12), false);
+  if (!choice) return null;
+
+  const labels = slotLabels(slots);
+  const meals = choice.meals.map((c, i) => ({
+    ...priceRecipe(c.priced.recipe, offers, priceBook, choice!.scale),
+    slot: slots[i],
+    slotLabel: labels[i],
+  }));
+  return { meals, scale: choice.scale };
 }
 
 function describeIssues(day: DayPlan, input: PlanInput): string[] {
   const issues: string[] = [];
   const kcal = Math.round(day.kcal);
-  if (Math.abs(day.kcal - input.kcal) > KCAL_TOLERANCE * input.kcal) issues.push(`Kalorie ${kcal} z ${input.kcal}`);
+  if (Math.abs(day.kcal - input.kcal) > KCAL_TOLERANCE * input.kcal) {
+    let text = `Kalorie ${kcal} z ${input.kcal}`;
+    if (day.kcal < input.kcal && day.scale >= SCALE_MAX) text += ', ani největší porce na cíl nestačí, přidej další jídlo';
+    if (day.kcal > input.kcal && day.scale <= SCALE_MIN) text += ', ani nejmenší porce nejsou dost malé, zkus méně jídel';
+    issues.push(text);
+  }
   if (day.protein < input.proteinMin) issues.push(`Bílkoviny ${Math.round(day.protein)} g z ${input.proteinMin} g`);
   if (day.fat > input.fatMax) issues.push(`Tuk ${Math.round(day.fat)} g nad limit ${input.fatMax} g`);
   return issues;
@@ -181,46 +329,46 @@ export function generatePlan(
 ): PlanResult {
   const fail = (message: string): PlanResult => ({ days: [], totalCost: 0, satisfied: false, issues: [message] });
   if (!(input.days >= 1)) return fail('Počet dní musí být alespoň 1');
-  if (!(input.meals >= 1)) return fail('Počet jídel musí být alespoň 1');
+  const slots = mealSlots(input.meals);
+  if (slots.length === 0) return fail('Počet jídel musí být alespoň 1');
 
-  const priced = recipes
-    .filter((r) => !isExcluded(r, input.excluded))
-    .map((r) => priceRecipe(r, offers, priceBook));
+  const pool = recipes.filter((r) => !isExcluded(r, input.excluded)).map((r) => priceRecipe(r, offers, priceBook));
+  const emptyDay: DayPlan = { meals: [], kcal: 0, protein: 0, fat: 0, cost: 0, scale: 1 };
+
+  const issues: string[] = [];
+  for (const kind of new Set(slots)) {
+    if (pool.length >= slots.length && !pool.some((p) => p.recipe.tags.includes(kind))) {
+      issues.push(`Chybí recepty pro ${SLOT_NOUN[kind]}, použity jiné recepty`);
+    }
+  }
 
   const days: DayPlan[] = [];
-  const issues: string[] = [];
-  let previous = new Set<string>();
+  const uses = new Map<string, number>();
+  let yesterday = new Set<string>();
 
   for (let d = 1; d <= input.days; d++) {
     const label = input.days > 1 ? `Den ${d}: ` : '';
-    const candidates: Candidate[] = priced
-      .map((p) => ({ priced: p, adjustedCost: p.cost * (previous.has(p.recipe.id) ? REPEAT_PENALTY : 1) }))
-      .sort((a, b) => a.adjustedCost / Math.max(a.priced.protein, 1) - b.adjustedCost / Math.max(b.priced.protein, 1));
+    const result = pool.length >= slots.length ? planDay(slots, pool, input, uses, yesterday, offers, priceBook) : null;
 
-    if (candidates.length < input.meals) {
-      issues.push(`${label}Nedostatek vhodných receptů (${candidates.length} z ${input.meals})`);
-      days.push({ meals: [], kcal: 0, protein: 0, fat: 0, cost: 0 });
-      previous = new Set();
+    if (!result) {
+      issues.push(`${label}Nedostatek vhodných receptů (${pool.length} z ${slots.length})`);
+      days.push({ ...emptyDay });
+      yesterday = new Set();
       continue;
     }
 
-    let choice = search(capPool(candidates.slice(0, SHORTLIST_SIZE), input.meals), input.meals, input);
-    if (!choice || choice.violation > 0) {
-      const wide = search(capPool(candidates, input.meals), input.meals, input);
-      if (wide && better(wide, choice)) choice = wide;
-    }
-
-    const meals = choice ? choice.meals.map((c) => c.priced) : [];
     const day: DayPlan = {
-      meals,
-      kcal: meals.reduce((a, m) => a + m.kcal, 0),
-      protein: meals.reduce((a, m) => a + m.protein, 0),
-      fat: meals.reduce((a, m) => a + m.fat, 0),
-      cost: meals.reduce((a, m) => a + m.cost, 0),
+      meals: result.meals,
+      kcal: result.meals.reduce((a, m) => a + m.kcal, 0),
+      protein: result.meals.reduce((a, m) => a + m.protein, 0),
+      fat: result.meals.reduce((a, m) => a + m.fat, 0),
+      cost: result.meals.reduce((a, m) => a + m.cost, 0),
+      scale: result.scale,
     };
     days.push(day);
     issues.push(...describeIssues(day, input).map((i) => label + i));
-    previous = new Set(meals.map((m) => m.recipe.id));
+    yesterday = new Set(result.meals.map((m) => m.recipe.id));
+    for (const m of result.meals) uses.set(m.recipe.id, (uses.get(m.recipe.id) ?? 0) + 1);
   }
 
   const totalCost = days.reduce((a, d) => a + d.cost, 0);

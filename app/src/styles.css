@@ -426,3 +426,12 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 .theme-toggle:active { transform: scale(0.94); }
 .theme-toggle svg { width: 22px; height: 22px; animation: theme-icon 0.35s var(--ease); }
 @keyframes theme-icon { from { transform: rotate(-70deg) scale(0.6); opacity: 0; } }
+
+/* ---------- meal plan courses ---------- */
+.meals-hint { margin: 0 0 6px; }
+.slot-pill {
+  display: inline-block; margin-bottom: 4px; padding: 3px 10px 3px 8px; font: 700 15px/1.1 var(--font-display);
+  background: var(--surface-2); border-left: 4px solid var(--accent); border-radius: 2px;
+}
+.scale-note { margin: 0; }
+.meal-head .num { flex: none; white-space: nowrap; }

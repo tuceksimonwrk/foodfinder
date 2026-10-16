@@ -8,6 +8,33 @@ const PROCESSED_STEMS = [
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+// The same few thousand offer names and dozens of keywords are compared over and over when pricing
+// recipes, so normalized names and keyword patterns are memoized (bounded, cleared when full).
+const CACHE_LIMIT = 20_000;
+const normalizedNames = new Map<string, { text: string; words: string[] }>();
+const keywordPatterns = new Map<string, RegExp | null>();
+
+function normalizedName(offerName: string) {
+  let entry = normalizedNames.get(offerName);
+  if (!entry) {
+    if (normalizedNames.size >= CACHE_LIMIT) normalizedNames.clear();
+    const text = normalizeText(offerName);
+    entry = { text, words: text.split(/[^a-z0-9]+/).filter(Boolean) };
+    normalizedNames.set(offerName, entry);
+  }
+  return entry;
+}
+
+function keywordPattern(keyword: string): RegExp | null {
+  let pattern = keywordPatterns.get(keyword);
+  if (pattern === undefined) {
+    const kw = normalizeText(keyword);
+    pattern = kw ? new RegExp(`(^|[^a-z])${escapeRegExp(kw)}[a-z]{0,2}($|[^a-z])`) : null;
+    keywordPatterns.set(keyword, pattern);
+  }
+  return pattern;
+}
+
 /**
  * Does an offer name denote the plain ingredient `keyword`?
  * The keyword must be a whole word (up to two inflection letters allowed, banán/banány),
@@ -15,16 +42,15 @@ const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
  * name must not contain a processed-product marker such as "pomazánka" or "v aspiku".
  */
 export function matchesProduct(offerName: string, keyword: string): boolean {
-  const name = normalizeText(offerName);
-  const kw = normalizeText(keyword);
-  if (!kw) return false;
+  const pattern = keywordPattern(keyword);
+  if (!pattern) return false;
 
-  const match = new RegExp(`(^|[^a-z])${escapeRegExp(kw)}[a-z]{0,2}($|[^a-z])`).exec(name);
+  const { text, words } = normalizedName(offerName);
+  const match = pattern.exec(text);
   if (!match) return false;
 
-  const wordsBefore = name.slice(0, match.index + match[1].length).split(' ').filter(Boolean).length;
+  const wordsBefore = text.slice(0, match.index + match[1].length).split(' ').filter(Boolean).length;
   if (wordsBefore > 1) return false;
 
-  const words = name.split(/[^a-z0-9]+/).filter(Boolean);
   return !words.some((w) => PROCESSED_STEMS.some((stem) => w.startsWith(stem)));
 }

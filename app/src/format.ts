@@ -19,3 +19,8 @@ export function formatValidity(o: { validFrom: string; validTo: string }, today:
   const [, month, day] = o.validFrom.split('-').map(Number);
   return `od ${day}. ${month}. ${formatValidTo(o.validTo)}`;
 }
+
+/** Portion factor, e.g. "1,25" (up to two decimals). */
+export function formatScale(scale: number): string {
+  return String(Math.round(scale * 100) / 100).replace('.', ',');
+}

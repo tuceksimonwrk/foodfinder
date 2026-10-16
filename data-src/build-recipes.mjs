@@ -44,6 +44,12 @@ const CATALOG = {
   'jablko': [['jablka', 'jablko'], 52, 0.3, 0.2, 14, 40],
   'olivový olej': [['olivový olej'], 880, 0, 100, 0, 200],
   'arašídové máslo': [['arašídové máslo'], 600, 25, 50, 10, 250],
+  'mléko': [['mléko'], 45, 3.4, 1.5, 4.8, 25],
+  'mandle': [['mandle'], 580, 21, 50, 10, 400],
+  'kuřecí šunka': [['kuřecí šunka', 'krůtí šunka'], 110, 18, 3, 1, 260],
+  'treska': [['treska'], 80, 18, 0.7, 0, 250],
+  'kuskus': [['kuskus'], 360, 13, 1.5, 72, 70],
+  'hrášek': [['hrášek'], 80, 5, 0.4, 14, 70],
 };
 
 const S = 'snidane', O = 'obed', V = 'vecere', C = 'svacina';
@@ -122,6 +128,52 @@ const RECIPES = [
     ['Vejce uvař natvrdo.', 'Podávej s chlebem a okurkou.']],
   ['cottage-paprika', 'Cottage s paprikou', [C], [['cottage', 250], ['paprika', 100], ['celozrnný chléb', 50]],
     ['Cottage ochuť solí a pepřem.', 'Podávej s plátky papriky a chlebem.']],
+
+  // ---- more breakfasts ----
+  ['ovesna-kase-arasidy-banan', 'Ovesná kaše s mlékem, banánem a arašídovým máslem', [S], [['ovesné vločky', 70], ['mléko', 200], ['banán', 100], ['arašídové máslo', 15]],
+    ['Vločky uvař v mléce do zhoustnutí.', 'Přidej banán a lžičku arašídového másla.']],
+  ['tvarohove-livance', 'Tvarohové lívance s jablkem', [S], [['tvaroh', 200], ['vejce', 100], ['ovesné vločky', 50], ['jablko', 100]],
+    ['Tvaroh, vejce a rozmixované vločky promíchej na těsto.', 'Peč malé lívance na suché pánvi a podávej s jablkem.']],
+  ['toast-vejce-mozzarella', 'Toast s vejcem a mozzarellou', [S], [['celozrnný chléb', 100], ['vejce', 120], ['mozzarella light', 40], ['rajčata', 80]],
+    ['Chléb opeč, na pánvi udělej volské oko.', 'Přidej mozzarellu a plátky rajčat.']],
+  ['skyr-mandle-banan', 'Skyr s mandlemi, banánem a vločkami', [S], [['skyr', 250], ['mandle', 15], ['banán', 100], ['ovesné vločky', 40]],
+    ['Skyr dej do misky, přisyp vločky a nasekané mandle.', 'Přidej na kolečka nakrájený banán.']],
+  ['omeleta-sunka-paprika', 'Omeleta se šunkou a paprikou', [S], [['vejce', 180], ['kuřecí šunka', 60], ['paprika', 80], ['celozrnný chléb', 60]],
+    ['Vejce rozšlehej, vylij na pánev a přidej šunku s paprikou.', 'Podávej s chlebem.']],
+
+  // ---- more snacks ----
+  ['recky-jogurt-mandle-jablko', 'Řecký jogurt s jablkem a mandlemi', [C], [['řecký jogurt', 150], ['jablko', 100], ['mandle', 15]],
+    ['Jogurt přelij nastrouhaným jablkem a posyp mandlemi.']],
+  ['tvaroh-arasidove-maslo-chleb', 'Chléb s tvarohem a arašídovým máslem', [C], [['tvaroh', 150], ['arašídové máslo', 15], ['celozrnný chléb', 50]],
+    ['Chléb potři tvarohem a arašídovým máslem.']],
+  ['sendvic-sunka-okurka', 'Sendvič se šunkou a okurkou', [C], [['celozrnný chléb', 80], ['kuřecí šunka', 60], ['okurka', 80]],
+    ['Chléb obloz šunkou a plátky okurky.']],
+  ['cottage-rajcata', 'Cottage s rajčaty na chlebu', [C], [['cottage', 200], ['rajčata', 100], ['celozrnný chléb', 40]],
+    ['Cottage nandej na chléb a přidej rajčata.']],
+  ['skyr-jablko-arasidy', 'Skyr s jablkem a arašídovým máslem', [C], [['skyr', 150], ['jablko', 150], ['arašídové máslo', 10]],
+    ['Skyr promíchej s arašídovým máslem a podávej s jablkem.']],
+  ['tunak-kukurice-chleb', 'Tuňák s kukuřicí na chlebu', [C], [['tuňák', 100], ['kukuřice', 60], ['celozrnný chléb', 50]],
+    ['Tuňáka smíchej s kukuřicí a namaž na chléb.']],
+  ['vejce-rajcata-mozzarella', 'Vejce s rajčaty a mozzarellou', [C], [['vejce', 100], ['mozzarella light', 50], ['rajčata', 100]],
+    ['Vejce uvař natvrdo, nakrájej a podávej s mozzarellou a rajčaty.']],
+
+  // ---- more main courses ----
+  ['treska-brambory-hrasek', 'Pečená treska s bramborami a hráškem', [O, V], [['treska', 180], ['brambory', 300], ['hrášek', 100], ['olivový olej', 8]],
+    ['Tresku peč 15 minut při 190 °C.', 'Brambory uvař a hrášek krátce povař.']],
+  ['kruti-kari-ryze', 'Krůtí kari s rýží', [O, V], [['krůtí prsa', 180], ['rýže', 80], ['rajčata', 150], ['cibule', 40]],
+    ['Krůtí maso nakrájej a osmahni s cibulí.', 'Přidej rajčata a kari koření, duš 15 minut a podávej s rýží.']],
+  ['kuskus-kure-zelenina', 'Kuřecí prsa s kuskusem a zeleninou', [O, V], [['kuřecí prsa', 180], ['kuskus', 80], ['paprika', 100], ['rajčata', 100]],
+    ['Kuskus zalij horkou vodou a nech nabobtnat.', 'Kuře s paprikou osmahni a smíchej s kuskusem.']],
+  ['tofu-testoviny-spenat', 'Těstoviny s tofu a špenátem', [O, V], [['tofu', 180], ['těstoviny', 90], ['špenát', 150], ['olivový olej', 8]],
+    ['Těstoviny uvař.', 'Tofu opeč, přidej špenát a smíchej s těstovinami.']],
+  ['losos-bulgur-brokolice', 'Losos s bulgurem a brokolicí', [O, V], [['losos', 140], ['bulgur', 80], ['brokolice', 200]],
+    ['Losos peč 15 minut při 190 °C.', 'Bulgur zalij horkou vodou a brokolici povař.']],
+  ['hovezi-ryze-paprika', 'Hovězí s rýží a paprikou', [O, V], [['mleté hovězí', 130], ['rýže', 80], ['paprika', 150], ['cibule', 40]],
+    ['Maso s cibulí osmahni, přidej papriku a duš do měkka.', 'Podávej s uvařenou rýží.']],
+  ['kure-cocka-zelenina', 'Kuře s čočkou a mrkví', [O, V], [['kuřecí prsa', 180], ['čočka', 70], ['mrkev', 100], ['cibule', 40]],
+    ['Čočku uvař doměkka.', 'Kuře s cibulí a mrkví osmahni a smíchej s čočkou.']],
+  ['fazolove-chilli-kruti', 'Fazolové chilli s krůtím masem', [O, V], [['krůtí prsa', 150], ['fazole', 150], ['rajčata', 150], ['kukuřice', 50]],
+    ['Krůtí maso osmahni.', 'Přidej rajčata, fazole a kukuřici a duš 20 minut.']],
 ];
 
 const catalog = (generic) => {

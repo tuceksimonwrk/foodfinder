@@ -4,7 +4,7 @@ import {
   type ListItem, type Offer, type PlanResult, type PriceBook, type PricedRecipe, type Recipe,
 } from '@foodfinder/shared';
 import { Meter } from '../components/Meter';
-import { formatNumber, formatPrice } from '../format';
+import { formatNumber, formatPrice, formatScale } from '../format';
 import { STORE_LABELS } from '../labels';
 import { newId } from '../store/shoppingList';
 
@@ -22,6 +22,14 @@ interface Props {
   defaults?: PlanDefaults;
 }
 
+const MEALS_HINT: Record<number, string> = {
+  2: 'Snídaně a večeře.',
+  3: 'Snídaně, oběd a večeře.',
+  4: 'Snídaně, oběd, odpolední svačina a večeře.',
+  5: 'Snídaně, dopolední svačina, oběd, odpolední svačina a večeře.',
+  6: 'Snídaně, oběd a večeře doplněné třemi svačinami.',
+};
+
 const FALLBACK_DEFAULTS: PlanDefaults = { kcal: 2200, proteinMin: 150, fatMax: 70 };
 
 const num = (v: string, fallback: number) => (v.trim() === '' || Number.isNaN(Number(v)) ? fallback : Number(v));
@@ -36,6 +44,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
   const [budget, setBudget] = useState('');
   const [plan, setPlan] = useState<PlanResult | null>(null);
   const [targets, setTargets] = useState<PlanDefaults>(defaults);
+  const [busy, setBusy] = useState(false);
 
   const generate = () => {
     const goal = {
@@ -44,20 +53,28 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
       fatMax: num(fatMax, defaults.fatMax),
     };
     setTargets(goal);
-    setPlan(
-      generatePlan(
-        {
-          ...goal,
-          meals,
-          days,
-          excluded: excluded.split(',').map((s) => s.trim()).filter(Boolean),
-          budget: budget.trim() === '' ? undefined : num(budget, 0),
-        },
-        recipes,
-        activeOffers(offers, toIsoDate(new Date())),
-        priceBook,
-      ),
-    );
+    setBusy(true);
+    // Let the browser paint "Generuji…" first: the search can take a second or two for a full week.
+    setTimeout(() => {
+      try {
+        setPlan(
+          generatePlan(
+            {
+              ...goal,
+              meals,
+              days,
+              excluded: excluded.split(',').map((s) => s.trim()).filter(Boolean),
+              budget: budget.trim() === '' ? undefined : num(budget, 0),
+            },
+            recipes,
+            activeOffers(offers, toIsoDate(new Date())),
+            priceBook,
+          ),
+        );
+      } finally {
+        setBusy(false);
+      }
+    }, 30);
   };
 
   const addMeal = (m: PricedRecipe) => onAddItems(ingredientsToListItems(m, newId));
@@ -89,7 +106,10 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
         Vyloučit suroviny (oddělené čárkou)
         <input type="text" placeholder="např. tvaroh, losos" value={excluded} onChange={(e) => setExcluded(e.target.value)} />
       </label>
-      <button className="primary generate" onClick={generate}>Vygenerovat jídelníček</button>
+      <p className="muted small meals-hint">{MEALS_HINT[meals]}</p>
+      <button className="primary generate" onClick={generate} disabled={busy} aria-busy={busy}>
+        {busy ? 'Generuji…' : 'Vygenerovat jídelníček'}
+      </button>
 
       {plan && (
         <div className="plan">
@@ -108,6 +128,11 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
               </header>
               {day.meals.length > 0 && (
                 <div className="scoreboard">
+                  {day.scale !== 1 && (
+                    <p className="muted small scale-note">
+                      Porce jsou upravené na {formatScale(day.scale)}× oproti receptu, aby seděly kalorie.
+                    </p>
+                  )}
                   <Meter label="Kalorie" unit="kcal" kind="range" value={day.kcal} target={targets.kcal} />
                   <Meter label="Bílkoviny" unit="g" kind="min" value={day.protein} target={targets.proteinMin} />
                   <Meter label="Tuk" unit="g" kind="max" value={day.fat} target={targets.fatMax} />
@@ -115,6 +140,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
               )}
               {day.meals.map((m) => (
                 <div key={m.recipe.id} className="meal">
+                  {m.slotLabel && <span className="slot-pill">{m.slotLabel}</span>}
                   <div className="meal-head">
                     <b>{m.recipe.name}</b>
                     <span className="num">{m.estimated ? '~' : ''}{formatPrice(m.cost)}</span>
