@@ -1,0 +1,2425 @@
+[
+ {
+  "id": "ovesna-kase-tvaroh-banan",
+  "name": "Ovesná kaše s tvarohem a banánem",
+  "steps": [
+   "Vločky zalij horkou vodou a nech 5 minut nabobtnat.",
+   "Vmíchej tvaroh a přidej nakrájený banán."
+  ],
+  "tags": [
+   "snidane"
+  ],
+  "ingredients": [
+   {
+    "generic": "ovesné vločky",
+    "keywords": [
+     "ovesné vločky"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 370,
+     "protein": 13,
+     "fat": 7,
+     "carbs": 60
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "tvaroh",
+    "keywords": [
+     "tvaroh"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 70,
+     "protein": 13,
+     "fat": 0.5,
+     "carbs": 3.5
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "banán",
+    "keywords": [
+     "banán"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 90,
+     "protein": 1.1,
+     "fat": 0.3,
+     "carbs": 21
+    },
+    "fallbackPricePerKg": 40
+   }
+  ]
+ },
+ {
+  "id": "skyr-vlocky-jablko",
+  "name": "Skyr s ovesnými vločkami a jablkem",
+  "steps": [
+   "Skyr promíchej s vločkami.",
+   "Přidej nastrouhané nebo nakrájené jablko."
+  ],
+  "tags": [
+   "snidane",
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "skyr",
+    "keywords": [
+     "skyr"
+    ],
+    "grams": 300,
+    "per100g": {
+     "kcal": 63,
+     "protein": 11,
+     "fat": 0.2,
+     "carbs": 4
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "ovesné vločky",
+    "keywords": [
+     "ovesné vločky"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 370,
+     "protein": 13,
+     "fat": 7,
+     "carbs": 60
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "jablko",
+    "keywords": [
+     "jablka",
+     "jablko"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 52,
+     "protein": 0.3,
+     "fat": 0.2,
+     "carbs": 14
+    },
+    "fallbackPricePerKg": 40
+   }
+  ]
+ },
+ {
+  "id": "michana-vejce-paprika-chleb",
+  "name": "Míchaná vejce s paprikou a chlebem",
+  "steps": [
+   "Na oleji krátce osmahni papriku.",
+   "Přidej rozklepnutá vejce a míchej do zpracování.",
+   "Podávej s chlebem."
+  ],
+  "tags": [
+   "snidane"
+  ],
+  "ingredients": [
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 180,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "celozrnný chléb",
+    "keywords": [
+     "chléb"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 240,
+     "protein": 9,
+     "fat": 2.5,
+     "carbs": 45
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 5,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "tvaroh-banan-arasidy",
+  "name": "Tvaroh s banánem a arašídovým máslem",
+  "steps": [
+   "Tvaroh rozmíchej s lžící arašídového másla.",
+   "Přidej na kolečka nakrájený banán."
+  ],
+  "tags": [
+   "snidane",
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "tvaroh",
+    "keywords": [
+     "tvaroh"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 70,
+     "protein": 13,
+     "fat": 0.5,
+     "carbs": 3.5
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "banán",
+    "keywords": [
+     "banán"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 90,
+     "protein": 1.1,
+     "fat": 0.3,
+     "carbs": 21
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "arašídové máslo",
+    "keywords": [
+     "arašídové máslo"
+    ],
+    "grams": 20,
+    "per100g": {
+     "kcal": 600,
+     "protein": 25,
+     "fat": 50,
+     "carbs": 10
+    },
+    "fallbackPricePerKg": 250
+   }
+  ]
+ },
+ {
+  "id": "omeleta-mozzarella-rajcata",
+  "name": "Omeleta s mozzarellou a rajčaty",
+  "steps": [
+   "Vejce rozšlehej a vylij na pánev.",
+   "Přidej mozzarellu a rajčata, přehni a dopeč."
+  ],
+  "tags": [
+   "snidane"
+  ],
+  "ingredients": [
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "mozzarella light",
+    "keywords": [
+     "mozzarella light",
+     "mozzarella"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 160,
+     "protein": 20,
+     "fat": 8,
+     "carbs": 1
+    },
+    "fallbackPricePerKg": 250
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "celozrnný chléb",
+    "keywords": [
+     "chléb"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 240,
+     "protein": 9,
+     "fat": 2.5,
+     "carbs": 45
+    },
+    "fallbackPricePerKg": 50
+   }
+  ]
+ },
+ {
+  "id": "cottage-chleb-okurka",
+  "name": "Cottage s okurkou na chlebu",
+  "steps": [
+   "Chléb potři cottage.",
+   "Přidej plátky okurky a rajčat."
+  ],
+  "tags": [
+   "snidane",
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "cottage",
+    "keywords": [
+     "cottage"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 98,
+     "protein": 11,
+     "fat": 4.3,
+     "carbs": 3.4
+    },
+    "fallbackPricePerKg": 130
+   },
+   {
+    "generic": "celozrnný chléb",
+    "keywords": [
+     "chléb"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 240,
+     "protein": 9,
+     "fat": 2.5,
+     "carbs": 45
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   }
+  ]
+ },
+ {
+  "id": "proteinove-palacinky",
+  "name": "Proteinové palačinky z vloček",
+  "steps": [
+   "Vločky, vejce a banán rozmixuj na těsto.",
+   "Peč malé palačinky na suché pánvi.",
+   "Podávej s tvarohem."
+  ],
+  "tags": [
+   "snidane"
+  ],
+  "ingredients": [
+   {
+    "generic": "ovesné vločky",
+    "keywords": [
+     "ovesné vločky"
+    ],
+    "grams": 70,
+    "per100g": {
+     "kcal": 370,
+     "protein": 13,
+     "fat": 7,
+     "carbs": 60
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "banán",
+    "keywords": [
+     "banán"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 90,
+     "protein": 1.1,
+     "fat": 0.3,
+     "carbs": 21
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "tvaroh",
+    "keywords": [
+     "tvaroh"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 70,
+     "protein": 13,
+     "fat": 0.5,
+     "carbs": 3.5
+    },
+    "fallbackPricePerKg": 80
+   }
+  ]
+ },
+ {
+  "id": "recky-jogurt-vlocky",
+  "name": "Bílý jogurt s vločkami a jablkem",
+  "steps": [
+   "Jogurt smíchej s tvarohem.",
+   "Přisyp vločky a nakrájené jablko."
+  ],
+  "tags": [
+   "snidane",
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "bílý jogurt",
+    "keywords": [
+     "bílý jogurt",
+     "jogurt bílý"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 60,
+     "protein": 4,
+     "fat": 3,
+     "carbs": 5
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "ovesné vločky",
+    "keywords": [
+     "ovesné vločky"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 370,
+     "protein": 13,
+     "fat": 7,
+     "carbs": 60
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "jablko",
+    "keywords": [
+     "jablka",
+     "jablko"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 52,
+     "protein": 0.3,
+     "fat": 0.2,
+     "carbs": 14
+    },
+    "fallbackPricePerKg": 40
+   },
+   {
+    "generic": "tvaroh",
+    "keywords": [
+     "tvaroh"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 70,
+     "protein": 13,
+     "fat": 0.5,
+     "carbs": 3.5
+    },
+    "fallbackPricePerKg": 80
+   }
+  ]
+ },
+ {
+  "id": "kure-ryze-brokolice",
+  "name": "Kuřecí prsa s rýží a brokolicí",
+  "steps": [
+   "Rýži uvař podle návodu.",
+   "Kuřecí maso nakrájej a osmahni na oleji.",
+   "Brokolici krátce povař a podávej společně."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 90,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "brokolice",
+    "keywords": [
+     "brokolice"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 34,
+     "protein": 2.8,
+     "fat": 0.4,
+     "carbs": 4
+    },
+    "fallbackPricePerKg": 60
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 8,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "kure-brambory-spenat",
+  "name": "Kuřecí prsa s bramborami a špenátem",
+  "steps": [
+   "Brambory uvař ve slupce.",
+   "Kuře osmahni a špenát krátce restuj na pánvi."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 300,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "špenát",
+    "keywords": [
+     "špenát"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 23,
+     "protein": 2.9,
+     "fat": 0.4,
+     "carbs": 1
+    },
+    "fallbackPricePerKg": 100
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 8,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "kruti-testoviny-rajcata",
+  "name": "Krůtí prsa s těstovinami a rajčaty",
+  "steps": [
+   "Těstoviny uvař.",
+   "Krůtí maso s cibulí osmahni, přidej rajčata a podus.",
+   "Smíchej s těstovinami."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "krůtí prsa",
+    "keywords": [
+     "krůtí prsa",
+     "krůtí prsní"
+    ],
+    "grams": 180,
+    "per100g": {
+     "kcal": 105,
+     "protein": 24,
+     "fat": 1,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   },
+   {
+    "generic": "těstoviny",
+    "keywords": [
+     "těstoviny",
+     "špagety"
+    ],
+    "grams": 90,
+    "per100g": {
+     "kcal": 350,
+     "protein": 12,
+     "fat": 1.5,
+     "carbs": 72
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 40,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   }
+  ]
+ },
+ {
+  "id": "bolognese-fit",
+  "name": "Fit boloňské těstoviny",
+  "steps": [
+   "Cibuli a mleté maso osmahni.",
+   "Přidej rajčata a duš 15 minut.",
+   "Podávej s uvařenými těstovinami."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "mleté hovězí",
+    "keywords": [
+     "mleté hovězí",
+     "hovězí mleté"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 190,
+     "protein": 20,
+     "fat": 12,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 220
+   },
+   {
+    "generic": "těstoviny",
+    "keywords": [
+     "těstoviny",
+     "špagety"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 350,
+     "protein": 12,
+     "fat": 1.5,
+     "carbs": 72
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   }
+  ]
+ },
+ {
+  "id": "panenka-brambory-mrkev",
+  "name": "Vepřová panenka s bramborami a mrkví",
+  "steps": [
+   "Panenku nakrájej na medailonky a osmaž.",
+   "Brambory a mrkev uvař nebo upeč."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "vepřová panenka",
+    "keywords": [
+     "vepřová panenka"
+    ],
+    "grams": 180,
+    "per100g": {
+     "kcal": 120,
+     "protein": 21,
+     "fat": 3.5,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 230
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 300,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "mrkev",
+    "keywords": [
+     "mrkev"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 41,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 30
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 8,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "losos-ryze-brokolice",
+  "name": "Losos s rýží a brokolicí",
+  "steps": [
+   "Losos peč 15 minut při 190 °C.",
+   "Rýži uvař, brokolici povař a podávej."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "losos",
+    "keywords": [
+     "losos"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 200,
+     "protein": 20,
+     "fat": 13,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 400
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "brokolice",
+    "keywords": [
+     "brokolice"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 34,
+     "protein": 2.8,
+     "fat": 0.4,
+     "carbs": 4
+    },
+    "fallbackPricePerKg": 60
+   }
+  ]
+ },
+ {
+  "id": "tunak-testoviny-salat",
+  "name": "Tuňákový těstovinový salát",
+  "steps": [
+   "Těstoviny uvař a nech vychladnout.",
+   "Smíchej s tuňákem, kukuřicí a nakrájenou zeleninou."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "tuňák",
+    "keywords": [
+     "tuňák"
+    ],
+    "grams": 140,
+    "per100g": {
+     "kcal": 110,
+     "protein": 25,
+     "fat": 1,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 400
+   },
+   {
+    "generic": "těstoviny",
+    "keywords": [
+     "těstoviny",
+     "špagety"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 12,
+     "fat": 1.5,
+     "carbs": 72
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "kukuřice",
+    "keywords": [
+     "kukuřice"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 80,
+     "protein": 3,
+     "fat": 1,
+     "carbs": 15
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   }
+  ]
+ },
+ {
+  "id": "cocka-vejce-cibule",
+  "name": "Čočka s vejcem a cibulí",
+  "steps": [
+   "Čočku uvař doměkka.",
+   "Cibuli osmahni a vmíchej do čočky.",
+   "Podávej s uvařeným vejcem."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "čočka",
+    "keywords": [
+     "čočka"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 350,
+     "protein": 25,
+     "fat": 1.5,
+     "carbs": 50
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 5,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "cizrna-kari-ryze",
+  "name": "Cizrnové kari s rýží",
+  "steps": [
+   "Cizrnu předem namoč a uvař.",
+   "Na oleji osmahni rajčata a špenát, přidej cizrnu a kari koření.",
+   "Podávej s rýží."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "cizrna",
+    "keywords": [
+     "cizrna"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 360,
+     "protein": 20,
+     "fat": 6,
+     "carbs": 50
+    },
+    "fallbackPricePerKg": 90
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "špenát",
+    "keywords": [
+     "špenát"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 23,
+     "protein": 2.9,
+     "fat": 0.4,
+     "carbs": 1
+    },
+    "fallbackPricePerKg": 100
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 10,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "tofu-stir-fry",
+  "name": "Tofu stir-fry s rýží",
+  "steps": [
+   "Tofu nakrájej a opeč do zlatova.",
+   "Přidej zeleninu a krátce orestuj.",
+   "Podávej s rýží."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "tofu",
+    "keywords": [
+     "tofu"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 120,
+     "protein": 13,
+     "fat": 7,
+     "carbs": 2
+    },
+    "fallbackPricePerKg": 150
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "brokolice",
+    "keywords": [
+     "brokolice"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 34,
+     "protein": 2.8,
+     "fat": 0.4,
+     "carbs": 4
+    },
+    "fallbackPricePerKg": 60
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 10,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "stehna-ryze-paprika",
+  "name": "Kuřecí stehna s rýží a paprikou",
+  "steps": [
+   "Stehna ochuť a peč 35 minut při 200 °C.",
+   "Rýži uvař a papriku opeč s masem."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí stehna",
+    "keywords": [
+     "kuřecí stehna",
+     "kuřecí stehno"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 125,
+     "protein": 20,
+     "fat": 5,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 100
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   }
+  ]
+ },
+ {
+  "id": "kure-syr-brambory",
+  "name": "Kuřecí prsa zapečená se sýrem",
+  "steps": [
+   "Kuřecí řízky posyp sýrem a rajčaty.",
+   "Peč 25 minut při 190 °C, podávej s vařenými bramborami."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "tvrdý sýr",
+    "keywords": [
+     "eidam",
+     "gouda",
+     "tvrdý sýr"
+    ],
+    "grams": 30,
+    "per100g": {
+     "kcal": 330,
+     "protein": 25,
+     "fat": 25,
+     "carbs": 1
+    },
+    "fallbackPricePerKg": 200
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   }
+  ]
+ },
+ {
+  "id": "bulgur-kure-zelenina",
+  "name": "Bulgur s kuřecím a zeleninou",
+  "steps": [
+   "Bulgur zalij horkou vodou a nech nabobtnat.",
+   "Kuře se zeleninou osmahni a smíchej s bulgurem."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 180,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "bulgur",
+    "keywords": [
+     "bulgur"
+    ],
+    "grams": 90,
+    "per100g": {
+     "kcal": 340,
+     "protein": 12,
+     "fat": 1.5,
+     "carbs": 68
+    },
+    "fallbackPricePerKg": 60
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 40,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   }
+  ]
+ },
+ {
+  "id": "chilli-fazole-hovezi",
+  "name": "Fazolové chilli s hovězím",
+  "steps": [
+   "Cibuli s masem osmahni.",
+   "Přidej rajčata, fazole a kukuřici a duš 20 minut."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "mleté hovězí",
+    "keywords": [
+     "mleté hovězí",
+     "hovězí mleté"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 190,
+     "protein": 20,
+     "fat": 12,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 220
+   },
+   {
+    "generic": "fazole",
+    "keywords": [
+     "fazole"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 90,
+     "protein": 6,
+     "fat": 0.5,
+     "carbs": 14
+    },
+    "fallbackPricePerKg": 60
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "kukuřice",
+    "keywords": [
+     "kukuřice"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 80,
+     "protein": 3,
+     "fat": 1,
+     "carbs": 15
+    },
+    "fallbackPricePerKg": 70
+   }
+  ]
+ },
+ {
+  "id": "testovinovy-salat-kure",
+  "name": "Těstovinový salát s kuřecím",
+  "steps": [
+   "Uvař těstoviny a kuře, nech vychladnout.",
+   "Smíchej se zeleninou a jogurtovou zálivkou."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 160,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "těstoviny",
+    "keywords": [
+     "těstoviny",
+     "špagety"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 12,
+     "fat": 1.5,
+     "carbs": 72
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "bílý jogurt",
+    "keywords": [
+     "bílý jogurt",
+     "jogurt bílý"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 60,
+     "protein": 4,
+     "fat": 3,
+     "carbs": 5
+    },
+    "fallbackPricePerKg": 50
+   }
+  ]
+ },
+ {
+  "id": "kruti-burger-brambory",
+  "name": "Krůtí karbanátky s bramborami",
+  "steps": [
+   "Krůtí maso umelte, přidej vejce a vytvaruj karbanátky.",
+   "Opeč a podávej s vařenými bramborami a okurkou."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "krůtí prsa",
+    "keywords": [
+     "krůtí prsa",
+     "krůtí prsní"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 105,
+     "protein": 24,
+     "fat": 1,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 300,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   }
+  ]
+ },
+ {
+  "id": "losos-brambory-spenat",
+  "name": "Losos s bramborami a špenátem",
+  "steps": [
+   "Losos peč 15 minut při 190 °C.",
+   "Brambory uvař, špenát krátce restuj."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "losos",
+    "keywords": [
+     "losos"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 200,
+     "protein": 20,
+     "fat": 13,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 400
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "špenát",
+    "keywords": [
+     "špenát"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 23,
+     "protein": 2.9,
+     "fat": 0.4,
+     "carbs": 1
+    },
+    "fallbackPricePerKg": 100
+   }
+  ]
+ },
+ {
+  "id": "cockova-polevka",
+  "name": "Čočková polévka s vejcem",
+  "steps": [
+   "Zeleninu a čočku uvař v litru vody.",
+   "Rozmixuj nahrubo a podávej s vejcem natvrdo."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "čočka",
+    "keywords": [
+     "čočka"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 25,
+     "fat": 1.5,
+     "carbs": 50
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "mrkev",
+    "keywords": [
+     "mrkev"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 41,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 30
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   }
+  ]
+ },
+ {
+  "id": "ryzovy-salat-tunak",
+  "name": "Rýžový salát s tuňákem",
+  "steps": [
+   "Rýži uvař a nech vychladnout.",
+   "Smíchej s tuňákem a zeleninou."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "tuňák",
+    "keywords": [
+     "tuňák"
+    ],
+    "grams": 140,
+    "per100g": {
+     "kcal": 110,
+     "protein": 25,
+     "fat": 1,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 400
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "kukuřice",
+    "keywords": [
+     "kukuřice"
+    ],
+    "grams": 60,
+    "per100g": {
+     "kcal": 80,
+     "protein": 3,
+     "fat": 1,
+     "carbs": 15
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "rajčata",
+    "keywords": [
+     "rajčata",
+     "rajče"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 18,
+     "protein": 0.9,
+     "fat": 0.2,
+     "carbs": 3.9
+    },
+    "fallbackPricePerKg": 70
+   }
+  ]
+ },
+ {
+  "id": "kure-zelenina-pankev",
+  "name": "Kuřecí prsa se zeleninou na pánvi",
+  "steps": [
+   "Kuře nakrájej a osmahni.",
+   "Přidej zeleninu a duš 10 minut."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 220,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "brokolice",
+    "keywords": [
+     "brokolice"
+    ],
+    "grams": 200,
+    "per100g": {
+     "kcal": 34,
+     "protein": 2.8,
+     "fat": 0.4,
+     "carbs": 4
+    },
+    "fallbackPricePerKg": 60
+   },
+   {
+    "generic": "olivový olej",
+    "keywords": [
+     "olivový olej"
+    ],
+    "grams": 10,
+    "per100g": {
+     "kcal": 880,
+     "protein": 0,
+     "fat": 100,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 200
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   }
+  ]
+ },
+ {
+  "id": "kure-rizoto",
+  "name": "Kuřecí rizoto",
+  "steps": [
+   "Maso a papriku osmahni.",
+   "Přidej rýži, zalij vývarem a duš do změknutí.",
+   "Posyp sýrem."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "kuřecí prsa",
+    "keywords": [
+     "kuřecí prsa",
+     "kuřecí prsní",
+     "kuřecí řízky"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 110,
+     "protein": 23,
+     "fat": 1.2,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 160
+   },
+   {
+    "generic": "rýže",
+    "keywords": [
+     "rýže"
+    ],
+    "grams": 90,
+    "per100g": {
+     "kcal": 350,
+     "protein": 7,
+     "fat": 0.8,
+     "carbs": 78
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "tvrdý sýr",
+    "keywords": [
+     "eidam",
+     "gouda",
+     "tvrdý sýr"
+    ],
+    "grams": 20,
+    "per100g": {
+     "kcal": 330,
+     "protein": 25,
+     "fat": 25,
+     "carbs": 1
+    },
+    "fallbackPricePerKg": 200
+   }
+  ]
+ },
+ {
+  "id": "hovezi-pankev-brambory",
+  "name": "Hovězí a zeleninová pánev",
+  "steps": [
+   "Brambory předvař.",
+   "Maso s cibulí a paprikou osmahni, přidej brambory a dopeč."
+  ],
+  "tags": [
+   "obed",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "mleté hovězí",
+    "keywords": [
+     "mleté hovězí",
+     "hovězí mleté"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 190,
+     "protein": 20,
+     "fat": 12,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 220
+   },
+   {
+    "generic": "brambory",
+    "keywords": [
+     "brambory"
+    ],
+    "grams": 300,
+    "per100g": {
+     "kcal": 77,
+     "protein": 2,
+     "fat": 0.1,
+     "carbs": 17
+    },
+    "fallbackPricePerKg": 25
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "cibule",
+    "keywords": [
+     "cibule"
+    ],
+    "grams": 40,
+    "per100g": {
+     "kcal": 40,
+     "protein": 1.1,
+     "fat": 0.1,
+     "carbs": 9
+    },
+    "fallbackPricePerKg": 25
+   }
+  ]
+ },
+ {
+  "id": "tunak-chleb-okurka",
+  "name": "Tuňák na chlebu s okurkou",
+  "steps": [
+   "Tuňáka rozmáčkni vidličkou.",
+   "Namaž na chléb a přidej plátky okurky."
+  ],
+  "tags": [
+   "svacina",
+   "vecere"
+  ],
+  "ingredients": [
+   {
+    "generic": "tuňák",
+    "keywords": [
+     "tuňák"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 110,
+     "protein": 25,
+     "fat": 1,
+     "carbs": 0
+    },
+    "fallbackPricePerKg": 400
+   },
+   {
+    "generic": "celozrnný chléb",
+    "keywords": [
+     "chléb"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 240,
+     "protein": 9,
+     "fat": 2.5,
+     "carbs": 45
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   }
+  ]
+ },
+ {
+  "id": "skyr-banan",
+  "name": "Skyr s banánem",
+  "steps": [
+   "Skyr dej do misky a přidej nakrájený banán."
+  ],
+  "tags": [
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "skyr",
+    "keywords": [
+     "skyr"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 63,
+     "protein": 11,
+     "fat": 0.2,
+     "carbs": 4
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "banán",
+    "keywords": [
+     "banán"
+    ],
+    "grams": 120,
+    "per100g": {
+     "kcal": 90,
+     "protein": 1.1,
+     "fat": 0.3,
+     "carbs": 21
+    },
+    "fallbackPricePerKg": 40
+   }
+  ]
+ },
+ {
+  "id": "tvaroh-jablko",
+  "name": "Tvaroh s jablkem a skořicí",
+  "steps": [
+   "Tvaroh promíchej se strouhaným jablkem a skořicí."
+  ],
+  "tags": [
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "tvaroh",
+    "keywords": [
+     "tvaroh"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 70,
+     "protein": 13,
+     "fat": 0.5,
+     "carbs": 3.5
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "jablko",
+    "keywords": [
+     "jablka",
+     "jablko"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 52,
+     "protein": 0.3,
+     "fat": 0.2,
+     "carbs": 14
+    },
+    "fallbackPricePerKg": 40
+   }
+  ]
+ },
+ {
+  "id": "vejce-chleb-okurka",
+  "name": "Vejce natvrdo s chlebem a okurkou",
+  "steps": [
+   "Vejce uvař natvrdo.",
+   "Podávej s chlebem a okurkou."
+  ],
+  "tags": [
+   "svacina",
+   "snidane"
+  ],
+  "ingredients": [
+   {
+    "generic": "vejce",
+    "keywords": [
+     "vejce"
+    ],
+    "grams": 150,
+    "per100g": {
+     "kcal": 143,
+     "protein": 12.5,
+     "fat": 10,
+     "carbs": 0.7
+    },
+    "fallbackPricePerKg": 70
+   },
+   {
+    "generic": "celozrnný chléb",
+    "keywords": [
+     "chléb"
+    ],
+    "grams": 80,
+    "per100g": {
+     "kcal": 240,
+     "protein": 9,
+     "fat": 2.5,
+     "carbs": 45
+    },
+    "fallbackPricePerKg": 50
+   },
+   {
+    "generic": "okurka",
+    "keywords": [
+     "okurka"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 15,
+     "protein": 0.7,
+     "fat": 0.1,
+     "carbs": 3
+    },
+    "fallbackPricePerKg": 50
+   }
+  ]
+ },
+ {
+  "id": "cottage-paprika",
+  "name": "Cottage s paprikou",
+  "steps": [
+   "Cottage ochuť solí a pepřem.",
+   "Podávej s plátky papriky a chlebem."
+  ],
+  "tags": [
+   "svacina"
+  ],
+  "ingredients": [
+   {
+    "generic": "cottage",
+    "keywords": [
+     "cottage"
+    ],
+    "grams": 250,
+    "per100g": {
+     "kcal": 98,
+     "protein": 11,
+     "fat": 4.3,
+     "carbs": 3.4
+    },
+    "fallbackPricePerKg": 130
+   },
+   {
+    "generic": "paprika",
+    "keywords": [
+     "paprika"
+    ],
+    "grams": 100,
+    "per100g": {
+     "kcal": 31,
+     "protein": 1,
+     "fat": 0.3,
+     "carbs": 6
+    },
+    "fallbackPricePerKg": 80
+   },
+   {
+    "generic": "celozrnný chléb",
+    "keywords": [
+     "chléb"
+    ],
+    "grams": 50,
+    "per100g": {
+     "kcal": 240,
+     "protein": 9,
+     "fat": 2.5,
+     "carbs": 45
+    },
+    "fallbackPricePerKg": 50
+   }
+  ]
+ }
+]
