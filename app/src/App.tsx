@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Offer } from '@foodfinder/shared';
 import { loadOffers, type LoadResult } from './data/loadData';
+import { Letak } from './views/Letak';
 
 type Tab = 'letak' | 'jidelnicek' | 'seznam' | 'nastaveni';
 
@@ -35,7 +36,7 @@ export function App() {
       )}
       {error && <div className="error">{error}. Zkus to prosím znovu, až budeš online.</div>}
       {!data && !error && <p>Načítám nabídky…</p>}
-      {data && <main>{renderTab(tab)}</main>}
+      {data && <main>{renderTab(tab, offers)}</main>}
       <nav className="nav">
         {TABS.map((t) => (
           <button key={t.id} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
@@ -47,6 +48,7 @@ export function App() {
   );
 }
 
-function renderTab(tab: Tab) {
+function renderTab(tab: Tab, offers: Offer[]) {
+  if (tab === 'letak') return <Letak offers={offers} onAdd={() => {}} />;
   return <h1>{TABS.find((t) => t.id === tab)!.label}</h1>;
 }

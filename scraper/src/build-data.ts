@@ -28,6 +28,16 @@ function previousCount(outPath: string): number {
   }
 }
 
+/** Offers that differ only in package size or price would share an id; suffix the later ones. */
+function ensureUniqueIds(offers: Offer[]): Offer[] {
+  const used = new Map<string, number>();
+  return offers.map((o) => {
+    const n = (used.get(o.id) ?? 0) + 1;
+    used.set(o.id, n);
+    return n === 1 ? o : { ...o, id: `${o.id}-${n}` };
+  });
+}
+
 export async function runBuild(opts: BuildOptions): Promise<{ count: number; written: boolean }> {
   const raws: RawOffer[] = [];
   for (const adapter of opts.adapters) {
@@ -39,7 +49,7 @@ export async function runBuild(opts: BuildOptions): Promise<{ count: number; wri
   }
 
   const today = toIsoDate(opts.now);
-  const valid: Offer[] = raws.map(normalizeOffer).filter((o) => o.validTo >= today);
+  const valid: Offer[] = ensureUniqueIds(raws.map(normalizeOffer).filter((o) => o.validTo >= today));
   const count = valid.length;
 
   const previous = previousCount(opts.outPath);

@@ -39,6 +39,14 @@ describe('applyFilters', () => {
     expect(applyFilters([], buildIndex([]), { ...F, query: 'x', fit: true })).toEqual([]));
 });
 
+describe('buildIndex', () => {
+  it('tolerates duplicate offer ids instead of throwing', () => {
+    const dup = [mk('same', 'Šunka 100 g'), mk('same', 'Šunka 250 g')];
+    expect(() => buildIndex(dup)).not.toThrow();
+    expect(applyFilters(dup, buildIndex(dup), { ...F, query: 'sunka' }).length).toBeGreaterThan(0);
+  });
+});
+
 describe('sortOffers', () => {
   it('sorts by protein cost ascending with unknown costs last', () => {
     const sorted = sortOffers(OFFERS.filter((o) => ['1', '2', '5', '6'].includes(o.id)), 'proteinCost');

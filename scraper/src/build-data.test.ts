@@ -28,6 +28,18 @@ describe('runBuild', () => {
     expect(file.generatedAt).toBe(NOW.toISOString());
   });
 
+  it('gives offers that differ only in package size unique ids', async () => {
+    const out = tmpOut();
+    const list = [
+      ...raws(1, { name: 'Šunka', quantityText: '100 g' }),
+      ...raws(1, { name: 'Šunka', quantityText: '250 g' }),
+      ...raws(1, { name: 'Šunka', quantityText: '250 g', price: 99 }),
+    ];
+    await runBuild({ adapters: [adapter('a', async () => list)], enrichDeps: deps, outPath: out, now: NOW });
+    const ids = read(out).offers.map((o: { id: string }) => o.id);
+    expect(new Set(ids).size).toBe(3);
+  });
+
   it('drops offers that are already expired', async () => {
     const out = tmpOut();
     const list = [...raws(5), ...raws(3, { validTo: '2026-10-10', name: 'Starý' })];

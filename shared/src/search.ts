@@ -23,7 +23,9 @@ export function buildIndex(offers: Offer[]): MiniSearch<Offer> {
     processTerm: (term) => normalizeText(term),
     searchOptions: { prefix: true, fuzzy: 0.2, combineWith: 'AND', processTerm: (term) => normalizeText(term) },
   });
-  index.addAll(offers);
+  // Duplicate ids would make MiniSearch throw; keep the first occurrence.
+  const seen = new Set<string>();
+  index.addAll(offers.filter((o) => !seen.has(o.id) && !!seen.add(o.id)));
   return index;
 }
 
