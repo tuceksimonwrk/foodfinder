@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { offerToListItem, type Offer } from '@foodfinder/shared';
-import { loadOffers, type LoadResult } from './data/loadData';
+import { offerToListItem, updatePriceBook, type ListItem, type Offer, type PriceBook, type Recipe } from '@foodfinder/shared';
+import { loadOffers, loadRecipes, type LoadResult } from './data/loadData';
+import { getJSON, setJSON } from './store/db';
 import { newId, useShoppingList } from './store/shoppingList';
+import { Jidelnicek } from './views/Jidelnicek';
 import { Letak } from './views/Letak';
 import { Seznam } from './views/Seznam';
 
@@ -22,11 +24,27 @@ export function App() {
   const [data, setData] = useState<LoadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [priceBook, setPriceBook] = useState<PriceBook>({});
   const list = useShoppingList();
 
   useEffect(() => {
     loadOffers().then(setData).catch((e: Error) => setError(e.message));
   }, []);
+
+  useEffect(() => {
+    loadRecipes().then(setRecipes).catch(() => setRecipes([]));
+  }, []);
+
+  // Remember the latest known ingredient prices so a later plan can estimate when an ingredient is not on sale.
+  useEffect(() => {
+    if (!data || recipes.length === 0) return;
+    getJSON<PriceBook>('price-book').then((stored) => {
+      const next = updatePriceBook(stored ?? {}, recipes, data.offers);
+      setPriceBook(next);
+      void setJSON('price-book', next);
+    });
+  }, [data, recipes]);
 
   useEffect(() => {
     if (!toast) return;
@@ -44,10 +62,20 @@ export function App() {
     [list.add],
   );
 
+  const addItems = useCallback(
+    (items: ListItem[]) => {
+      list.addMany(items);
+      setToast(`Přidáno položek: ${items.length}`);
+    },
+    [list.addMany],
+  );
+
   const renderTab = () => {
     switch (tab) {
       case 'letak':
         return <Letak offers={offers} onAdd={addOffer} />;
+      case 'jidelnicek':
+        return <Jidelnicek offers={offers} recipes={recipes} priceBook={priceBook} onAddItems={addItems} />;
       case 'seznam':
         return <Seznam list={list} />;
       default:

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Ingredient, Offer, Recipe } from './types';
-import { generatePlan, ingredientsToListItems, priceRecipe, type PlanInput } from './planner';
+import { generatePlan, ingredientsToListItems, priceRecipe, updatePriceBook, type PlanInput } from './planner';
 
 const ing = (
   generic: string, keywords: string[], grams: number,
@@ -154,5 +154,19 @@ describe('ingredientsToListItems', () => {
     });
     expect(items[1]).toMatchObject({ label: 'rýže', grams: 100, estimated: true, pricePerKg: 50 });
     expect(items[1].store).toBeUndefined();
+  });
+});
+
+describe('updatePriceBook', () => {
+  it('records the cheapest matching offer price per ingredient and keeps older entries', () => {
+    const book = updatePriceBook({ rýže: 44, 'starý': 9 }, [R1], OFFERS);
+    expect(book['kuřecí prsa']).toBe(150);
+    expect(book['rýže']).toBe(44);
+    expect(book['starý']).toBe(9);
+  });
+  it('does not mutate the previous book', () => {
+    const before = { rýže: 44 };
+    updatePriceBook(before, [R1], OFFERS);
+    expect(before).toEqual({ rýže: 44 });
   });
 });

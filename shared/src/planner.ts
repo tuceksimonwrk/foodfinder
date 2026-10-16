@@ -252,3 +252,15 @@ export function ingredientsToListItems(p: PricedRecipe, makeId: () => string = r
     checked: false,
   }));
 }
+
+/** Remembers the latest offer price of every ingredient that currently has a matching offer. */
+export function updatePriceBook(book: PriceBook, recipes: Recipe[], offers: Offer[]): PriceBook {
+  const next = { ...book };
+  for (const recipe of recipes) {
+    for (const ing of recipe.ingredients) {
+      const priced = priceIngredient(ing, offers, {});
+      if (!priced.estimated) next[ing.generic] = priced.pricePerKg;
+    }
+  }
+  return next;
+}
