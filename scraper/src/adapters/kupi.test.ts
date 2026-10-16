@@ -16,6 +16,10 @@ describe('parseValidity', () => {
   it('parses "zítra končí"', () => expect(parseValidity('zítra končí', NOW)).toEqual({ to: '2026-10-17' }));
   it('rolls over to the next year', () =>
     expect(parseValidity('platí do pátku 2. 1.', new Date('2026-12-30T12:00:00'))).toEqual({ to: '2027-01-02' }));
+  it('resolves December dates seen in early January to the previous year', () =>
+    expect(parseValidity('platí do čtvrtka 31. 12.', new Date('2027-01-02T12:00:00'))).toEqual({ to: '2026-12-31' }));
+  it('handles a range that spans New Year', () =>
+    expect(parseValidity('út 29. 12. – ne 4. 1.', new Date('2027-01-02T12:00:00'))).toEqual({ from: '2026-12-29', to: '2027-01-04' }));
   it('returns null for unknown text', () => expect(parseValidity('kdysi', NOW)).toBeNull());
 });
 

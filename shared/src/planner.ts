@@ -1,3 +1,4 @@
+import { matchesProduct } from './product';
 import { normalizeText } from './text';
 import type { ListItem } from './shopping';
 import type { Ingredient, Offer, Recipe } from './types';
@@ -56,20 +57,11 @@ const SHORTLIST_SIZE = 12;
 /** Upper bound on evaluated combinations per day so large recipe books cannot stall the UI. */
 const MAX_COMBOS = 300_000;
 
-const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-/** Whole-word match that tolerates up to two inflection letters (banán / banány). */
-function nameMatches(offerName: string, keyword: string): boolean {
-  const kw = normalizeText(keyword);
-  if (!kw) return false;
-  return new RegExp(`(^|[^a-z])${escapeRegExp(kw)}[a-z]{0,2}($|[^a-z])`).test(normalizeText(offerName));
-}
-
 function priceIngredient(ing: Ingredient, offers: Offer[], priceBook: PriceBook): PricedIngredient {
   let best: Offer | undefined;
   for (const o of offers) {
     if (o.pricePerKg === undefined) continue;
-    if (!ing.keywords.some((k) => nameMatches(o.name, k))) continue;
+    if (!ing.keywords.some((k) => matchesProduct(o.name, k))) continue;
     if (!best || o.pricePerKg < best.pricePerKg!) best = o;
   }
   const pricePerKg = best?.pricePerKg ?? priceBook[ing.generic] ?? ing.fallbackPricePerKg;

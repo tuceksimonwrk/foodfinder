@@ -1,5 +1,6 @@
 import { czkPer30gProtein, type Offer } from '@foodfinder/shared';
-import { formatNumber, formatPrice, formatValidTo } from '../format';
+import { toIsoDate } from '@foodfinder/shared';
+import { formatNumber, formatPrice, formatValidity } from '../format';
 import { CATEGORY_LABELS, nutritionSourceLabel, STORE_LABELS } from '../labels';
 
 interface Props {
@@ -15,7 +16,7 @@ export function OfferCard({ offer, onAdd }: Props) {
     <article className="card">
       <div className="card-head">
         <span className="store">{STORE_LABELS[offer.store]}</span>
-        <span className="muted">{CATEGORY_LABELS[offer.category]} · {formatValidTo(offer.validTo)}</span>
+        <span className="muted">{CATEGORY_LABELS[offer.category]} · {formatValidity(offer, toIsoDate(new Date()))}</span>
       </div>
       <h3 className="card-title">
         <a href={offer.sourceUrl} target="_blank" rel="noreferrer">{offer.name}</a>

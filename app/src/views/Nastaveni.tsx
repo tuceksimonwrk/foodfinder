@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { STORES, normalizeKey, normalizeText, type NutritionOverrides, type Offer } from '@foodfinder/shared';
+import { STORES, type NutritionOverrides, type Offer } from '@foodfinder/shared';
 import { STORE_LABELS } from '../labels';
 import type { Settings } from '../store/settings';
+import { correctableProducts } from './correctable';
 
 interface Props {
   settings: Settings;
@@ -55,17 +56,12 @@ function MacroForm({ name, onSave }: { name: string; onSave: (m: { kcal: number;
 export function Nastaveni({ settings, onChange, offers, overrides, onOverridesChange }: Props) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState<string | null>(null);
+  const [includeEstimates, setIncludeEstimates] = useState(false);
 
-  const missing = useMemo(() => {
-    const byKey = new Map<string, string>();
-    for (const o of offers) {
-      const key = normalizeKey(o.name);
-      if (!key || o.nutrition || overrides[key] || byKey.has(key)) continue;
-      byKey.set(key, o.name);
-    }
-    const q = normalizeText(query);
-    return [...byKey.entries()].filter(([key]) => !q || key.includes(q));
-  }, [offers, overrides, query]);
+  const missing = useMemo(
+    () => correctableProducts(offers, overrides, includeEstimates, query),
+    [offers, overrides, includeEstimates, query],
+  );
 
   const toggleStore = (s: (typeof STORES)[number]) =>
     onChange({
@@ -110,8 +106,12 @@ export function Nastaveni({ settings, onChange, offers, overrides, onOverridesCh
       </div>
       <p className="muted small">Filtr obchodů se v letáku použije, dokud sis v něm nevybral vlastní.</p>
 
-      <h2 className="section-title">Nabídky bez maker</h2>
-      <p className="muted small">Doplň makra na 100 g. Oprava platí pro všechna balení stejného produktu.</p>
+      <h2 className="section-title">Opravit makra</h2>
+      <p className="muted small">Doplň makra na 100 g u produktů bez maker. Oprava platí pro všechna balení stejného produktu.</p>
+      <label className="fit-toggle">
+        <input type="checkbox" checked={includeEstimates} onChange={(e) => setIncludeEstimates(e.target.checked)} />
+        <span>Ukázat i produkty s odhadnutými makry (slovník, OFF podle názvu)</span>
+      </label>
       <input className="search" type="search" placeholder="Hledat produkt…" value={query} onChange={(e) => setQuery(e.target.value)} />
       <ul className="missing">
         {missing.slice(0, MAX_LISTED).map(([key, name]) => (

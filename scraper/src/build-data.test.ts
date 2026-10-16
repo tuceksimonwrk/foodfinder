@@ -64,10 +64,49 @@ describe('runBuild', () => {
 
   it('keeps the previous file when the new result is under half of it', async () => {
     const out = tmpOut();
-    writeFileSync(out, JSON.stringify({ generatedAt: 'old', offers: new Array(100).fill({}) }));
+    writeFileSync(out, JSON.stringify({ generatedAt: 'old', offers: new Array(100).fill({ store: 'lidl', validTo: '2026-10-30' }) }));
     const r = await runBuild({ adapters: [adapter('a', async () => raws(30))], enrichDeps: deps, outPath: out, now: NOW });
     expect(r.written).toBe(false);
     expect(read(out).generatedAt).toBe('old');
+  });
+
+  it('compares against previously valid offers only, so expired history cannot block a refresh', async () => {
+    const out = tmpOut();
+    const old = [
+      ...new Array(90).fill({ store: 'lidl', validTo: '2026-09-01' }),
+      ...new Array(10).fill({ store: 'lidl', validTo: '2026-10-30' }),
+    ];
+    writeFileSync(out, JSON.stringify({ generatedAt: 'old', offers: old }));
+    const r = await runBuild({ adapters: [adapter('a', async () => raws(30))], enrichDeps: deps, outPath: out, now: NOW });
+    expect(r.written).toBe(true);
+  });
+
+  it('refuses data in which a previously well-covered store vanished', async () => {
+    const out = tmpOut();
+    const old = [
+      ...new Array(40).fill({ store: 'penny', validTo: '2026-10-30' }),
+      ...new Array(60).fill({ store: 'lidl', validTo: '2026-10-30' }),
+    ];
+    writeFileSync(out, JSON.stringify({ generatedAt: 'old', offers: old }));
+    const r = await runBuild({ adapters: [adapter('a', async () => raws(80))], enrichDeps: deps, outPath: out, now: NOW });
+    expect(r.written).toBe(false);
+    expect(read(out).generatedAt).toBe('old');
+  });
+
+  it('writes anyway when forced, except for an empty result', async () => {
+    const out = tmpOut();
+    writeFileSync(
+      out,
+      JSON.stringify({ generatedAt: 'old', offers: new Array(100).fill({ store: 'lidl', validTo: '2026-10-30' }) }),
+    );
+    const forced = await runBuild({
+      adapters: [adapter('a', async () => raws(10))], enrichDeps: deps, outPath: out, now: NOW, force: true,
+    });
+    expect(forced.written).toBe(true);
+    const empty = await runBuild({
+      adapters: [adapter('a', async () => [])], enrichDeps: deps, outPath: out, now: NOW, force: true,
+    });
+    expect(empty.written).toBe(false);
   });
 
   it('survives one failing adapter', async () => {

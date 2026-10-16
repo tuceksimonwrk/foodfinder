@@ -28,8 +28,9 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.includes('/data/') && url.pathname.endsWith('.json'),
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'data-json' },
+            // Fresh offers matter more than instant load; the cache is only the offline fallback.
+            handler: 'NetworkFirst',
+            options: { cacheName: 'data-json', networkTimeoutSeconds: 3 },
           },
         ],
       },

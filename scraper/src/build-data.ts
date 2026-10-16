@@ -14,18 +14,38 @@ export interface BuildOptions {
   enrichDeps: EnrichDeps;
   outPath: string;
   now: Date;
+  /** Write even if the result looks suspiciously small (never for an empty result). */
+  force?: boolean;
 }
 
 /** Below this share of the previous offer count the new data is considered suspicious. */
 const MIN_SHARE_OF_PREVIOUS = 0.5;
 
-function previousCount(outPath: string): number {
-  if (!existsSync(outPath)) return 0;
+/** Previous offers that are still valid; expired history must not make a healthy refresh look like a drop. */
+function previousValid(outPath: string, today: string): Pick<Offer, 'store' | 'validTo'>[] {
+  if (!existsSync(outPath)) return [];
   try {
-    return JSON.parse(readFileSync(outPath, 'utf8')).offers?.length ?? 0;
+    const offers: Pick<Offer, 'store' | 'validTo'>[] = JSON.parse(readFileSync(outPath, 'utf8')).offers ?? [];
+    return offers.filter((o) => o.validTo >= today);
   } catch {
-    return 0;
+    return [];
   }
+}
+
+const countByStore = (offers: Pick<Offer, 'store'>[]) =>
+  offers.reduce<Record<string, number>>((acc, o) => ((acc[o.store] = (acc[o.store] ?? 0) + 1), acc), {});
+
+/** A store that used to have a real presence and now has none points to a broken scrape. */
+const MIN_STORE_PRESENCE = 20;
+
+function looksSuspicious(previous: Pick<Offer, 'store'>[], next: Offer[]): string | null {
+  if (previous.length > 0 && next.length < previous.length * MIN_SHARE_OF_PREVIOUS) {
+    return `${next.length} new offers vs ${previous.length} still valid before`;
+  }
+  const before = countByStore(previous);
+  const after = countByStore(next);
+  const vanished = Object.entries(before).find(([store, n]) => n >= MIN_STORE_PRESENCE && !after[store]);
+  return vanished ? `store ${vanished[0]} had ${vanished[1]} offers and now has none` : null;
 }
 
 /** Offers that differ only in package size or price would share an id; suffix the later ones. */
@@ -52,9 +72,9 @@ export async function runBuild(opts: BuildOptions): Promise<{ count: number; wri
   const valid: Offer[] = ensureUniqueIds(raws.map(normalizeOffer).filter((o) => o.validTo >= today));
   const count = valid.length;
 
-  const previous = previousCount(opts.outPath);
-  if (count === 0 || (previous > 0 && count < previous * MIN_SHARE_OF_PREVIOUS)) {
-    console.error(`refusing to overwrite ${opts.outPath}: ${count} new offers vs ${previous} previous`);
+  const reason = count === 0 ? 'no offers' : opts.force ? null : looksSuspicious(previousValid(opts.outPath, today), valid);
+  if (reason) {
+    console.error(`refusing to overwrite ${opts.outPath}: ${reason}`);
     return { count, written: false };
   }
 
@@ -75,6 +95,7 @@ async function main() {
     },
     outPath: resolve(root, 'app/public/data/offers.json'),
     now: new Date(),
+    force: process.env.FORCE_WRITE === '1',
   });
   console.log(`offers: ${result.count}, written: ${result.written}`);
   if (!result.written) process.exit(1);

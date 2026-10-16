@@ -13,5 +13,10 @@ describe('lookupDictionary', () => {
     const normal = lookupDictionary('Tvaroh polotučný 250 g')!;
     expect(lean.fat).toBeLessThan(normal.fat);
   });
+  it('does not give lean-meat macros to processed products', () => {
+    for (const name of ['Tuňáková pomazánka', 'Krém tuňákový', 'Salát s tuňákem Giana', 'Vejce v aspiku'])
+      expect(lookupDictionary(name), name).toBeNull();
+  });
+  it('still recognizes plain tuna', () => expect(lookupDictionary('Tuňák ve vlastní šťávě')).not.toBeNull());
   it('returns null for unknown products', () => expect(lookupDictionary('Coca Cola')).toBeNull());
 });

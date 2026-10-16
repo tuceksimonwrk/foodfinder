@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  generatePlan, ingredientsToListItems,
+  activeOffers, generatePlan, ingredientsToListItems, toIsoDate,
   type ListItem, type Offer, type PlanResult, type PriceBook, type PricedRecipe, type Recipe,
 } from '@foodfinder/shared';
 import { formatNumber, formatPrice } from '../format';
@@ -48,7 +48,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
           budget: budget.trim() === '' ? undefined : num(budget, 0),
         },
         recipes,
-        offers,
+        activeOffers(offers, toIsoDate(new Date())),
         priceBook,
       ),
     );

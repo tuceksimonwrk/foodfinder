@@ -27,6 +27,13 @@ jobs:
 
       - run: npm ci
 
+      # Open Food Facts answers are expensive to fetch (strict rate limit); keep them between runs.
+      - uses: actions/cache@v4
+        with:
+          path: scraper/cache
+          key: off-cache-${{ github.run_id }}
+          restore-keys: off-cache-
+
       - run: npm test
 
       # A failed or suspicious scrape keeps the last committed offers.json.
@@ -34,6 +41,10 @@ jobs:
         id: scrape
         continue-on-error: true
         run: npm run scrape
+
+      - name: Warn about stale data
+        if: steps.scrape.outcome == 'failure'
+        run: echo "::warning::Scrape failed or was rejected by the safety checks; deploying the last good offers.json"
 
       - name: Commit refreshed data
         if: steps.scrape.outcome == 'success'

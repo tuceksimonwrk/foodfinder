@@ -5,7 +5,12 @@ import type { Nutrition } from '@foodfinder/shared';
 export interface OffClientOptions {
   fetchFn?: typeof fetch;
   cachePath?: string;
+  /** Pause between EAN lookups. */
   minIntervalMs?: number;
+  /** Pause between name searches (OFF allows only ~10 searches per minute). */
+  searchIntervalMs?: number;
+  /** Name searches per run; further ones are skipped (and not cached) so coverage grows over several runs. */
+  maxSearches?: number;
   timeoutMs?: number;
   /** After this many consecutive failed requests OFF is skipped for the rest of the run. */
   maxConsecutiveFailures?: number;
@@ -33,6 +38,9 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 export function createOffClient(opts: OffClientOptions = {}) {
   const fetchFn = opts.fetchFn ?? fetch;
   const minInterval = opts.minIntervalMs ?? 700;
+  const searchInterval = opts.searchIntervalMs ?? 6000;
+  const maxSearches = opts.maxSearches ?? 40;
+  let searches = 0;
   let cache: Cache = {};
   if (opts.cachePath && existsSync(opts.cachePath)) {
     try {
@@ -52,9 +60,9 @@ export function createOffClient(opts: OffClientOptions = {}) {
     writeFileSync(opts.cachePath, JSON.stringify(cache));
   };
 
-  async function get(url: string): Promise<any | undefined> {
+  async function get(url: string, interval: number): Promise<any | undefined> {
     if (failures >= maxFailures) return undefined;
-    const wait = lastRequest + minInterval - Date.now();
+    const wait = lastRequest + interval - Date.now();
     if (wait > 0) await sleep(wait);
     lastRequest = Date.now();
     try {
@@ -79,12 +87,15 @@ export function createOffClient(opts: OffClientOptions = {}) {
     let result: Nutrition | null;
     let answered: boolean;
     if (q.ean) {
-      const body = await get(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(q.ean)}.json`);
+      const body = await get(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(q.ean)}.json`, minInterval);
       answered = body !== undefined;
       result = mapNutriments(body?.product?.nutriments, 0.9);
     } else {
+      if (searches >= maxSearches) return null;
+      searches++;
       const body = await get(
         `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q.name)}&json=1&page_size=3&countries_tags=en:czech-republic`,
+        searchInterval,
       );
       answered = body !== undefined;
       const hits: { nutriments?: OffNutriments }[] = body?.products ?? [];

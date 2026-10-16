@@ -12,6 +12,7 @@ const opts = (fetchFn: typeof fetch) => ({
   fetchFn,
   cachePath: join(mkdtempSync(join(tmpdir(), 'off-')), 'cache.json'),
   minIntervalMs: 0,
+  searchIntervalMs: 0,
 });
 
 describe('createOffClient', () => {
@@ -56,6 +57,25 @@ describe('createOffClient', () => {
   it('returns null instead of throwing when the request fails', async () => {
     const off = createOffClient(opts(vi.fn(() => Promise.reject(new Error('net'))) as unknown as typeof fetch));
     expect(await off({ ean: '1', name: 'x' })).toBeNull();
+  });
+
+  it('caps name searches per run but keeps EAN lookups unlimited', async () => {
+    const fetchFn = vi.fn(() => json(fixture('off-search.json'))) as unknown as typeof fetch;
+    const off = createOffClient({ ...opts(fetchFn), maxSearches: 2 });
+    const results = [];
+    for (let i = 0; i < 5; i++) results.push(await off({ name: `produkt ${i}` }));
+    expect(fetchFn).toHaveBeenCalledTimes(2);
+    expect(results.slice(2)).toEqual([null, null, null]);
+    const eanFetch = vi.fn(() => json(fixture('off-product.json'))) as unknown as typeof fetch;
+    const eanOff = createOffClient({ ...opts(eanFetch), maxSearches: 0 });
+    expect(await eanOff({ ean: '1', name: 'x' })).not.toBeNull();
+  });
+
+  it('does not cache lookups skipped by the search cap', async () => {
+    const fetchFn = vi.fn(() => json(fixture('off-search.json'))) as unknown as typeof fetch;
+    const o = opts(fetchFn);
+    await createOffClient({ ...o, maxSearches: 0 })({ name: 'skyr' });
+    expect(await createOffClient({ ...o, maxSearches: 5 })({ name: 'skyr' })).not.toBeNull();
   });
 
   it('stops calling OFF after repeated failures so an outage cannot stall the run', async () => {

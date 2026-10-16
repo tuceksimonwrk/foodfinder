@@ -66,3 +66,8 @@ export function sortOffers(offers: Offer[], key: SortKey): Offer[] {
       return copy.sort((a, b) => (czkPer30gProtein(a) ?? Number.MAX_VALUE) - (czkPer30gProtein(b) ?? Number.MAX_VALUE));
   }
 }
+
+/** Offers valid on `today` (ISO date): started and not yet ended. */
+export function activeOffers(offers: Offer[], today: string): Offer[] {
+  return offers.filter((o) => o.validFrom <= today && o.validTo >= today);
+}

@@ -39,12 +39,10 @@ const clean = (s: string) => s.replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
 const pad = (n: number) => String(n).padStart(2, '0');
 const DAY_MS = 86_400_000;
 
-/** Day/month without a year: pick the year that puts the date closest after (now − 180 days). */
+/** Day/month without a year: the year in which the date lies closest to `now` (leaflets run a few weeks either way). */
 function resolveDate(day: number, month: number, now: Date): Date {
-  const candidate = new Date(now.getFullYear(), month - 1, day);
-  return candidate.getTime() < now.getTime() - 180 * DAY_MS
-    ? new Date(now.getFullYear() + 1, month - 1, day)
-    : candidate;
+  const candidates = [-1, 0, 1].map((d) => new Date(now.getFullYear() + d, month - 1, day));
+  return candidates.reduce((best, c) => (Math.abs(c.getTime() - now.getTime()) < Math.abs(best.getTime() - now.getTime()) ? c : best));
 }
 
 export function parseValidity(text: string, now: Date): { from?: string; to: string } | null {

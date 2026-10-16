@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Nutrition, Offer } from './types';
-import { applyFilters, buildIndex, sortOffers, type Filters } from './search';
+import { activeOffers, applyFilters, buildIndex, sortOffers, type Filters } from './search';
 
 const nut = (protein: number, fat: number): Nutrition => ({
   kcal: 100, protein, fat, carbs: 0, source: 'dictionary', confidence: 0.6,
@@ -37,6 +37,18 @@ describe('applyFilters', () => {
     expect(ids(run({ fit: true, minProtein: 15, maxFat: 5 }))).toEqual(['1', '6']));
   it('handles an empty offer list', () =>
     expect(applyFilters([], buildIndex([]), { ...F, query: 'x', fit: true })).toEqual([]));
+});
+
+describe('activeOffers', () => {
+  it('drops offers that have not started and offers that already ended', () => {
+    const list = [
+      mk('now', 'A', { validFrom: '2026-10-10', validTo: '2026-10-20' }),
+      mk('future', 'B', { validFrom: '2026-10-22', validTo: '2026-10-25' }),
+      mk('past', 'C', { validFrom: '2026-10-01', validTo: '2026-10-15' }),
+      mk('today', 'D', { validFrom: '2026-10-16', validTo: '2026-10-16' }),
+    ];
+    expect(activeOffers(list, '2026-10-16').map((o) => o.id)).toEqual(['now', 'today']);
+  });
 });
 
 describe('buildIndex', () => {
