@@ -6,6 +6,9 @@ export interface OffClientOptions {
   fetchFn?: typeof fetch;
   cachePath?: string;
   minIntervalMs?: number;
+  timeoutMs?: number;
+  /** After this many consecutive failed requests OFF is skipped for the rest of the run. */
+  maxConsecutiveFailures?: number;
 }
 
 type Query = { ean?: string; name: string };
@@ -38,6 +41,9 @@ export function createOffClient(opts: OffClientOptions = {}) {
       cache = {};
     }
   }
+  const timeoutMs = opts.timeoutMs ?? 8000;
+  const maxFailures = opts.maxConsecutiveFailures ?? 3;
+  let failures = 0;
   let lastRequest = 0;
 
   const persist = () => {
@@ -47,13 +53,21 @@ export function createOffClient(opts: OffClientOptions = {}) {
   };
 
   async function get(url: string): Promise<any | undefined> {
+    if (failures >= maxFailures) return undefined;
     const wait = lastRequest + minInterval - Date.now();
     if (wait > 0) await sleep(wait);
     lastRequest = Date.now();
     try {
-      const res = await fetchFn(url, { headers: { 'User-Agent': 'foodfinder-personal' } });
-      return res.ok ? await res.json() : undefined;
+      const res = await fetchFn(url, {
+        headers: { 'User-Agent': 'foodfinder-personal' },
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const body = await res.json();
+      failures = 0;
+      return body;
     } catch {
+      failures++;
       return undefined;
     }
   }

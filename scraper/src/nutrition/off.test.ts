@@ -57,4 +57,18 @@ describe('createOffClient', () => {
     const off = createOffClient(opts(vi.fn(() => Promise.reject(new Error('net'))) as unknown as typeof fetch));
     expect(await off({ ean: '1', name: 'x' })).toBeNull();
   });
+
+  it('stops calling OFF after repeated failures so an outage cannot stall the run', async () => {
+    const fetchFn = vi.fn(() => Promise.reject(new Error('down'))) as unknown as typeof fetch;
+    const off = createOffClient(opts(fetchFn));
+    for (let i = 0; i < 10; i++) await off({ name: `produkt ${i}` });
+    expect(fetchFn).toHaveBeenCalledTimes(3);
+  });
+
+  it('passes an abort signal so a hanging request times out', async () => {
+    const fetchFn = vi.fn(() => json(fixture('off-product.json'))) as unknown as typeof fetch;
+    await createOffClient(opts(fetchFn))({ ean: '1', name: 'x' });
+    const init = (fetchFn as unknown as ReturnType<typeof vi.fn>).mock.calls[0][1];
+    expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
 });

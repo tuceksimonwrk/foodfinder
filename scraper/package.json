@@ -7,6 +7,7 @@
     "build-data": "tsx src/build-data.ts"
   },
   "dependencies": {
-    "@foodfinder/shared": "*"
+    "@foodfinder/shared": "*",
+    "cheerio": "^1.2.0"
   }
 }
