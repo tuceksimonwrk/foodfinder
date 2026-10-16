@@ -1,0 +1,19 @@
+{
+  "name": "foodfinder",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "scraper",
+    "app"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "scrape": "npm run build-data -w scraper"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
