@@ -112,3 +112,10 @@ button.secondary {
 .meal { border-top: 1px solid var(--border); padding: 10px 0; }
 .meal-head { display: flex; justify-content: space-between; gap: 8px; }
 .ingredients { margin: 6px 0; padding-left: 18px; font-size: 14px; }
+.section-title { font-size: 15px; margin: 20px 0 6px; }
+.missing { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.missing li { padding: 8px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.missing li:last-child { border-bottom: 0; }
+button.link { background: none; border: 0; padding: 0; color: var(--text); font: inherit; text-align: left; cursor: pointer; text-decoration: underline dotted; }
+.macro-form { width: 100%; }
+button.primary:disabled { opacity: 0.4; cursor: not-allowed; }

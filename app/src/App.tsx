@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import { offerToListItem, updatePriceBook, type ListItem, type Offer, type PriceBook, type Recipe } from '@foodfinder/shared';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { applyLocalOverrides, offerToListItem, updatePriceBook, type ListItem, type Offer, type PriceBook, type Recipe } from '@foodfinder/shared';
 import { loadOffers, loadRecipes, type LoadResult } from './data/loadData';
 import { getJSON, setJSON } from './store/db';
+import { useLocalOverrides, useSettings } from './store/settings';
 import { newId, useShoppingList } from './store/shoppingList';
 import { Jidelnicek } from './views/Jidelnicek';
 import { Letak } from './views/Letak';
+import { Nastaveni } from './views/Nastaveni';
 import { Seznam } from './views/Seznam';
 
 type Tab = 'letak' | 'jidelnicek' | 'seznam' | 'nastaveni';
@@ -27,6 +29,8 @@ export function App() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [priceBook, setPriceBook] = useState<PriceBook>({});
   const list = useShoppingList();
+  const [settings, updateSettings, settingsLoaded] = useSettings();
+  const [overrides, setOverrides] = useLocalOverrides();
 
   useEffect(() => {
     loadOffers().then(setData).catch((e: Error) => setError(e.message));
@@ -52,7 +56,8 @@ export function App() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  const offers: Offer[] = data?.offers ?? [];
+  const rawOffers: Offer[] = data?.offers ?? [];
+  const offers = useMemo(() => applyLocalOverrides(rawOffers, overrides), [rawOffers, overrides]);
 
   const addOffer = useCallback(
     (o: Offer) => {
@@ -73,13 +78,35 @@ export function App() {
   const renderTab = () => {
     switch (tab) {
       case 'letak':
-        return <Letak offers={offers} onAdd={addOffer} />;
+        return (
+          <Letak
+            offers={offers}
+            onAdd={addOffer}
+            defaults={{ minProtein: settings.fitMinProtein, maxFat: settings.fitMaxFat, favoriteStores: settings.favoriteStores }}
+          />
+        );
       case 'jidelnicek':
-        return <Jidelnicek offers={offers} recipes={recipes} priceBook={priceBook} onAddItems={addItems} />;
+        return (
+          <Jidelnicek
+            offers={offers}
+            recipes={recipes}
+            priceBook={priceBook}
+            onAddItems={addItems}
+            defaults={{ kcal: settings.kcal, proteinMin: settings.proteinMin, fatMax: settings.fatMax }}
+          />
+        );
       case 'seznam':
         return <Seznam list={list} />;
-      default:
-        return <h1>{TABS.find((t) => t.id === tab)!.label}</h1>;
+      case 'nastaveni':
+        return (
+          <Nastaveni
+            settings={settings}
+            onChange={updateSettings}
+            offers={rawOffers}
+            overrides={overrides}
+            onOverridesChange={setOverrides}
+          />
+        );
     }
   };
 
@@ -93,7 +120,7 @@ export function App() {
       )}
       {error && <div className="error">{error}. Zkus to prosím znovu, až budeš online.</div>}
       {!data && !error && <p>Načítám nabídky…</p>}
-      {data && <main>{renderTab()}</main>}
+      {data && settingsLoaded && <main>{renderTab()}</main>}
       {toast && <div className="toast" role="status">{toast}</div>}
       <nav className="nav">
         {TABS.map((t) => (

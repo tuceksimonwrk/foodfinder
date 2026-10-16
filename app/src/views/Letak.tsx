@@ -1,43 +1,41 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import {
   STORES, applyFilters, buildIndex, sortOffers,
-  type Category, type Filters, type Offer, type SortKey, type Store,
+  type Category, type Offer, type SortKey,
 } from '@foodfinder/shared';
 import { OfferCard } from '../components/OfferCard';
+import { initialLetakState, type LetakDefaults, type LetakState } from './letakState';
 import { CATEGORY_LABELS, STORE_LABELS } from '../labels';
 
 interface Props {
   offers: Offer[];
   onAdd: (o: Offer) => void;
-  defaults?: { minProtein: number; maxFat: number; favoriteStores: Store[] };
+  defaults?: LetakDefaults;
 }
 
-interface State extends Filters {
-  sort: SortKey;
-}
+type State = LetakState;
 
 const PAGE = 60;
 const STORAGE_KEY = 'letak-filters';
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
 
-const initialState = (defaults: Props['defaults']): State => {
-  const base: State = {
-    query: '', stores: defaults?.favoriteStores ?? [], categories: [], minDiscountPct: 0,
-    fit: false, minProtein: defaults?.minProtein ?? 15, maxFat: defaults?.maxFat ?? 8, sort: 'relevance',
-  };
+const FALLBACK_DEFAULTS: LetakDefaults = { minProtein: 15, maxFat: 8, favoriteStores: [] };
+
+const loadState = (defaults: LetakDefaults): State => {
+  let saved: Partial<State> | null = null;
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return { ...base, ...JSON.parse(saved), query: '' };
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) saved = JSON.parse(raw);
   } catch {
     /* ignore unavailable or corrupt storage */
   }
-  return base;
+  return initialLetakState(defaults, saved);
 };
 
 const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((x) => x !== item) : [...list, item]);
 
 export function Letak({ offers, onAdd, defaults }: Props) {
-  const [state, setState] = useState<State>(() => initialState(defaults));
+  const [state, setState] = useState<State>(() => loadState(defaults ?? FALLBACK_DEFAULTS));
   const [shown, setShown] = useState(PAGE);
   const index = useMemo(() => buildIndex(offers), [offers]);
   const query = useDeferredValue(state.query);
@@ -73,7 +71,7 @@ export function Letak({ offers, onAdd, defaults }: Props) {
 
       <div className="chips" aria-label="Obchody">
         {STORES.map((s) => (
-          <button key={s} className={state.stores.includes(s) ? 'chip on' : 'chip'} onClick={() => set({ stores: toggle(state.stores, s) })}>
+          <button key={s} className={state.stores.includes(s) ? 'chip on' : 'chip'} onClick={() => set({ stores: toggle(state.stores, s), storesTouched: true })}>
             {STORE_LABELS[s]}
           </button>
         ))}
