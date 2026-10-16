@@ -6,6 +6,13 @@
     <meta name="theme-color" content="#0e1f3d" />
     <link rel="icon" href="icon-192.png" />
     <title>Fit leták</title>
+    <script>
+      // Apply a saved light/dark choice before first paint (no flash of the wrong theme).
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

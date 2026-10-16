@@ -4,9 +4,11 @@ import { applyLocalOverrides, offerToListItem, updatePriceBook, type ListItem, t
 import { loadOffers, loadRecipes, type LoadResult } from './data/loadData';
 import { getJSON, setJSON } from './store/db';
 import { useLocalOverrides, useSettings } from './store/settings';
+import { useTheme } from './store/useTheme';
 import { newId, useShoppingList } from './store/shoppingList';
 import { Jidelnicek } from './views/Jidelnicek';
 import { ListIcon, PlateIcon, SlidersIcon, TagIcon } from './components/Icons';
+import { ThemeToggle } from './components/ThemeToggle';
 import { Letak } from './views/Letak';
 import { Nastaveni } from './views/Nastaveni';
 import { Seznam } from './views/Seznam';
@@ -31,6 +33,7 @@ export function App() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [priceBook, setPriceBook] = useState<PriceBook>({});
   const list = useShoppingList();
+  const theme = useTheme();
   const [settings, updateSettings, settingsLoaded] = useSettings();
   const [overrides, setOverrides] = useLocalOverrides();
 
@@ -119,12 +122,15 @@ export function App() {
       <header className="topbar">
         <div className="topbar-inner">
           <h1 className="brand"><span className="brand-mark" aria-hidden="true" />Fit leták</h1>
-          {data && (
-            <div className={data.fromCache ? 'freshness offline' : 'freshness'}>
-              <div>Data z {formatStamp(data.generatedAt)}</div>
-              <div>{data.fromCache ? 'offline kopie, ' : ''}{offers.length} nabídek</div>
-            </div>
-          )}
+          <div className="topbar-actions">
+            {data && (
+              <div className={data.fromCache ? 'freshness offline' : 'freshness'}>
+                <div>Data z {formatStamp(data.generatedAt)}</div>
+                <div>{data.fromCache ? 'offline kopie, ' : ''}{offers.length} nabídek</div>
+              </div>
+            )}
+            <ThemeToggle choice={theme.choice} onClick={theme.cycle} />
+          </div>
         </div>
       </header>
 
