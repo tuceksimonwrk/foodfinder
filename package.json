@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "scrape": "npm run build-data -w scraper"
+    "scrape": "npm run build-data -w scraper",
+    "refresh": "node scripts/refresh.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.15",
