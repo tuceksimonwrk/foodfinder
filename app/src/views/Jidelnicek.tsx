@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   activeOffers, generatePlan, ingredientsToListItems, toIsoDate,
-  type ListItem, type Offer, type PlanResult, type PriceBook, type PricedRecipe, type Recipe,
+  type ListItem, type Offer, type PlanMode, type PlanResult, type PriceBook, type PricedRecipe, type Recipe,
 } from '@foodfinder/shared';
 import { Meter } from '../components/Meter';
 import { formatNumber, formatPrice, formatScale } from '../format';
@@ -32,6 +32,15 @@ const MEALS_HINT: Record<number, string> = {
 
 const FALLBACK_DEFAULTS: PlanDefaults = { kcal: 2200, proteinMin: 150, fatMax: 70 };
 
+const MODE_KEY = 'plan-mode';
+const loadMode = (): PlanMode => {
+  try {
+    return localStorage.getItem(MODE_KEY) === 'discount' ? 'discount' : 'cheapest';
+  } catch {
+    return 'cheapest';
+  }
+};
+
 const num = (v: string, fallback: number) => (v.trim() === '' || Number.isNaN(Number(v)) ? fallback : Number(v));
 
 export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = FALLBACK_DEFAULTS }: Props) {
@@ -45,6 +54,16 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
   const [plan, setPlan] = useState<PlanResult | null>(null);
   const [targets, setTargets] = useState<PlanDefaults>(defaults);
   const [busy, setBusy] = useState(false);
+  const [mode, setMode] = useState<PlanMode>(loadMode);
+
+  const chooseMode = (next: PlanMode) => {
+    setMode(next);
+    try {
+      localStorage.setItem(MODE_KEY, next);
+    } catch {
+      /* the choice lasts for this visit only */
+    }
+  };
 
   const generate = () => {
     const goal = {
@@ -65,6 +84,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
               days,
               excluded: excluded.split(',').map((s) => s.trim()).filter(Boolean),
               budget: budget.trim() === '' ? undefined : num(budget, 0),
+              mode,
             },
             recipes,
             activeOffers(offers, toIsoDate(new Date())),
@@ -106,7 +126,23 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
         Vyloučit suroviny (oddělené čárkou)
         <input type="text" placeholder="např. tvaroh, losos" value={excluded} onChange={(e) => setExcluded(e.target.value)} />
       </label>
-      <p className="muted small meals-hint">{MEALS_HINT[meals]}</p>
+      <fieldset className="segmented">
+        <legend>Vybírat jídla podle</legend>
+        <label>
+          <input type="radio" name="plan-mode" checked={mode === 'cheapest'} onChange={() => chooseMode('cheapest')} />
+          <span>Nejlevnější</span>
+        </label>
+        <label>
+          <input type="radio" name="plan-mode" checked={mode === 'discount'} onChange={() => chooseMode('discount')} />
+          <span>Největší slevy</span>
+        </label>
+      </fieldset>
+      <p className="muted small meals-hint">
+        {mode === 'cheapest'
+          ? 'Vybere sestavu s nejnižší cenou.'
+          : 'Vybere sestavu, která ti proti běžným cenám ušetří nejvíc korun, a teprve potom hlídá cenu.'}
+        {' '}{MEALS_HINT[meals]}
+      </p>
       <button className="primary generate" onClick={generate} disabled={busy} aria-busy={busy}>
         {busy ? 'Generuji…' : 'Vygenerovat jídelníček'}
       </button>
@@ -119,7 +155,12 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
               <ul>{plan.issues.map((i) => <li key={i}>{i}</li>)}</ul>
             </div>
           )}
-          {plan.days.length > 0 && <p className="total">Celkem {formatPrice(plan.totalCost)}</p>}
+          {plan.days.length > 0 && (
+            <p className="total">
+              Celkem {formatPrice(plan.totalCost)}{" "}
+              {plan.totalSavings >= 1 && <span className="total-saving">ušetříš {formatPrice(plan.totalSavings)}</span>}
+            </p>
+          )}
           {plan.days.map((day, idx) => (
             <article key={idx} className="day" style={{ animationDelay: `${idx * 70}ms` }}>
               <header className="day-head">
@@ -128,6 +169,9 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
               </header>
               {day.meals.length > 0 && (
                 <div className="scoreboard">
+                  {day.savings >= 1 && (
+                    <p className="saving-line">Ušetříš {formatPrice(day.savings)} oproti běžným cenám.</p>
+                  )}
                   {day.scale !== 1 && (
                     <p className="muted small scale-note">
                       Porce jsou upravené na {formatScale(day.scale)}× oproti receptu, aby seděly kalorie.
@@ -145,6 +189,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
                     <b>{m.recipe.name}</b>
                     <span className="num">{m.estimated ? '~' : ''}{formatPrice(m.cost)}</span>
                   </div>
+                  {m.savings >= 1 && <span className="deal-tag">−{formatPrice(m.savings)} slevy</span>}
                   <div className="muted small">
                     {formatNumber(m.kcal)} kcal, {formatNumber(m.protein)} g bílkovin, {formatNumber(m.fat)} g tuku
                   </div>
@@ -153,6 +198,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
                       <li key={i.generic}>
                         {formatNumber(i.grams)} g {i.offer?.name ?? i.generic}
                         {i.offer ? ` (${STORE_LABELS[i.offer.store]}, ${formatPrice(i.cost)})` : ` (odhad ~${formatPrice(i.cost)})`}
+                        {i.discountPct !== undefined && <span className="deal-pct">−{i.discountPct} %</span>}
                       </li>
                     ))}
                   </ul>

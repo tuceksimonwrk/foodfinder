@@ -9,6 +9,9 @@ export type PriceBook = Record<string, number>;
 /** A course of the day. Recipes carry these as tags. */
 export type MealSlot = 'snidane' | 'obed' | 'vecere' | 'svacina';
 
+/** How meals are picked: the lowest price, or the biggest saving against regular prices. */
+export type PlanMode = 'cheapest' | 'discount';
+
 export interface PricedIngredient {
   generic: string;
   grams: number;
@@ -16,6 +19,10 @@ export interface PricedIngredient {
   cost: number;
   offer?: Offer;
   estimated: boolean;
+  /** Discount of the matched offer in percent (undefined without a discount). */
+  discountPct?: number;
+  /** Kč saved against the regular price of this amount. */
+  saving: number;
 }
 
 export interface PricedRecipe {
@@ -29,6 +36,8 @@ export interface PricedRecipe {
   estimated: boolean;
   /** Portion factor applied to the recipe's amounts (1 = the recipe as written). */
   scale: number;
+  /** Kč saved against regular prices by the discounted ingredients of this meal. */
+  savings: number;
   /** Generic name of the ingredient that brings the most protein. */
   mainProtein: string;
   slot?: MealSlot;
@@ -43,6 +52,8 @@ export interface PlanInput {
   days: number;
   excluded: string[];
   budget?: number;
+  /** Default: cheapest. */
+  mode?: PlanMode;
 }
 
 export interface DayPlan {
@@ -51,6 +62,7 @@ export interface DayPlan {
   protein: number;
   fat: number;
   cost: number;
+  savings: number;
   /** One portion factor for the whole day, chosen so the calories land on the target. */
   scale: number;
 }
@@ -58,6 +70,7 @@ export interface DayPlan {
 export interface PlanResult {
   days: DayPlan[];
   totalCost: number;
+  totalSavings: number;
   satisfied: boolean;
   issues: string[];
 }
@@ -69,6 +82,8 @@ const KCAL_TOLERANCE = 0.05;
 /** Upper bounds on evaluated combinations per day so large recipe books cannot stall the UI. */
 const MAX_COMBOS = 200_000;
 const MAX_COMBOS_WIDE = 400_000;
+/** In discount mode one Kč saved outweighs this many Kč of price when comparing whole days. */
+const DEAL_WEIGHT = 3;
 
 // ---------- courses ----------
 
@@ -124,13 +139,18 @@ function priceIngredient(ing: Ingredient, offers: Offer[], priceBook: PriceBook,
   }
   const pricePerKg = best?.pricePerKg ?? priceBook[ing.generic] ?? ing.fallbackPricePerKg;
   const grams = scale === 1 ? ing.grams : roundGrams(ing.grams * scale);
+  const cost = (grams / 1000) * pricePerKg;
+  const pct = best?.discountPct ?? 0;
+  const discounted = pct > 0 && pct < 100;
   return {
     generic: ing.generic,
     grams,
     pricePerKg,
-    cost: (grams / 1000) * pricePerKg,
+    cost,
     offer: best,
     estimated: best === undefined,
+    discountPct: discounted ? pct : undefined,
+    saving: discounted ? cost / (1 - pct / 100) - cost : 0,
   };
 }
 
@@ -151,6 +171,7 @@ export function priceRecipe(recipe: Recipe, offers: Offer[], priceBook: PriceBoo
     recipe,
     ingredients,
     cost: ingredients.reduce((acc, i) => acc + i.cost, 0),
+    savings: ingredients.reduce((acc, i) => acc + i.saving, 0),
     kcal: sum((i) => i.per100g.kcal),
     protein: sum((i) => i.per100g.protein),
     fat: sum((i) => i.per100g.fat),
@@ -205,18 +226,28 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
 const comboLimit = (slots: number, budget: number, cap: number) =>
   clamp(Math.floor(Math.pow(budget, 1 / Math.max(slots, 1))), 3, cap);
 
-/** Candidates for one course, best first: calories close to the course's share, little repeated lately. */
-function shortlist(pool: Candidate[], targetKcal: number, size: number): Candidate[] {
+/**
+ * Candidates for one course, best first: calories close to the course's share, little repeated lately,
+ * and a nudge towards what the mode asks for (low price per kcal, or a large share of discounted ingredients).
+ */
+function shortlist(pool: Candidate[], targetKcal: number, size: number, mode: PlanMode): Candidate[] {
   const fit = (c: Candidate) => Math.abs(Math.log(Math.max(c.priced.kcal, 50) / Math.max(targetKcal, 50)));
-  return [...pool].sort((a, b) => fit(a) + a.repeat - (fit(b) + b.repeat)).slice(0, size);
+  const perKcal = (c: Candidate) => c.priced.cost / Math.max(c.priced.kcal, 50);
+  const sorted = pool.map(perKcal).sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)] || 1;
+  const dealShare = (c: Candidate) => c.priced.savings / (c.priced.cost + c.priced.savings || 1);
+  const lean = (c: Candidate) =>
+    mode === 'discount' ? -1.2 * dealShare(c) : 0.4 * Math.log(Math.max(perKcal(c), 1e-6) / median);
+  return [...pool].sort((a, b) => fit(a) + a.repeat + lean(a) - (fit(b) + b.repeat + lean(b))).slice(0, size);
 }
 
 function search(lists: Candidate[][], slots: MealSlot[], shares: number[], input: PlanInput): Choice | null {
+  const dealWeight = input.mode === 'discount' ? DEAL_WEIGHT : 0;
   const n = lists.length;
   const picked: Candidate[] = [];
   let best: Choice | null = null;
 
-  const visit = (i: number, kcal: number, protein: number, fat: number, cost: number) => {
+  const visit = (i: number, kcal: number, protein: number, fat: number, cost: number, savings: number) => {
     if (i === n) {
       const scale = clamp(Math.round(input.kcal / kcal / SCALE_STEP) * SCALE_STEP, SCALE_MIN, SCALE_MAX);
       const v = violation(kcal * scale, protein * scale, fat * scale, input);
@@ -236,7 +267,9 @@ function search(lists: Candidate[][], slots: MealSlot[], shares: number[], input
       const dinner = slots.indexOf('vecere');
       const sameMain = lunch >= 0 && dinner >= 0 && proteins[lunch] === proteins[dinner] ? 1 : 0;
 
-      const score = cost * scale * (1 + 0.5 * Math.abs(Math.log(scale)) + 0.4 * shape + repeat + 0.1 * duplicates + 0.5 * sameMain);
+      const score =
+        cost * scale * (1 + 0.5 * Math.abs(Math.log(scale)) + 0.4 * shape + repeat + 0.1 * duplicates + 0.5 * sameMain) -
+        dealWeight * savings * scale;
       const choice: Choice = { meals: [], scale, violation: v, score };
       if (better(choice, best)) {
         choice.meals = [...picked];
@@ -247,11 +280,11 @@ function search(lists: Candidate[][], slots: MealSlot[], shares: number[], input
     for (const c of lists[i]) {
       if (picked.some((p) => p.priced.recipe.id === c.priced.recipe.id)) continue;
       picked.push(c);
-      visit(i + 1, kcal + c.priced.kcal, protein + c.priced.protein, fat + c.priced.fat, cost + c.priced.cost);
+      visit(i + 1, kcal + c.priced.kcal, protein + c.priced.protein, fat + c.priced.fat, cost + c.priced.cost, savings + c.priced.savings);
       picked.pop();
     }
   };
-  visit(0, 0, 0, 0, 0);
+  visit(0, 0, 0, 0, 0, 0);
   return best;
 }
 
@@ -283,7 +316,7 @@ function planDay(
   const run = (size: number, restrictToTags: boolean): Choice | null => {
     const lists = slots.map((kind, i) => {
       const own = restrictToTags ? tagged(kind) : [];
-      return shortlist(own.length ? own : all, shares[i] * input.kcal, size);
+      return shortlist(own.length ? own : all, shares[i] * input.kcal, size, input.mode ?? 'cheapest');
     });
     return search(lists, slots, shares, input);
   };
@@ -327,13 +360,13 @@ export function generatePlan(
   offers: Offer[],
   priceBook: PriceBook,
 ): PlanResult {
-  const fail = (message: string): PlanResult => ({ days: [], totalCost: 0, satisfied: false, issues: [message] });
+  const fail = (message: string): PlanResult => ({ days: [], totalCost: 0, totalSavings: 0, satisfied: false, issues: [message] });
   if (!(input.days >= 1)) return fail('Počet dní musí být alespoň 1');
   const slots = mealSlots(input.meals);
   if (slots.length === 0) return fail('Počet jídel musí být alespoň 1');
 
   const pool = recipes.filter((r) => !isExcluded(r, input.excluded)).map((r) => priceRecipe(r, offers, priceBook));
-  const emptyDay: DayPlan = { meals: [], kcal: 0, protein: 0, fat: 0, cost: 0, scale: 1 };
+  const emptyDay: DayPlan = { meals: [], kcal: 0, protein: 0, fat: 0, cost: 0, savings: 0, scale: 1 };
 
   const issues: string[] = [];
   for (const kind of new Set(slots)) {
@@ -363,6 +396,7 @@ export function generatePlan(
       protein: result.meals.reduce((a, m) => a + m.protein, 0),
       fat: result.meals.reduce((a, m) => a + m.fat, 0),
       cost: result.meals.reduce((a, m) => a + m.cost, 0),
+      savings: result.meals.reduce((a, m) => a + m.savings, 0),
       scale: result.scale,
     };
     days.push(day);
@@ -372,10 +406,11 @@ export function generatePlan(
   }
 
   const totalCost = days.reduce((a, d) => a + d.cost, 0);
+  const totalSavings = days.reduce((a, d) => a + d.savings, 0);
   if (input.budget !== undefined && totalCost > input.budget) {
     issues.push(`Cena ${Math.round(totalCost)} Kč překračuje rozpočet ${input.budget} Kč`);
   }
-  return { days, totalCost, satisfied: issues.length === 0, issues };
+  return { days, totalCost, totalSavings, satisfied: issues.length === 0, issues };
 }
 
 const randomId = () => Math.random().toString(36).slice(2);

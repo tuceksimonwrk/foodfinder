@@ -73,6 +73,18 @@ const plan = (over: Partial<PlanInput> = {}, recipes = LIBRARY, offers: Offer[] 
 
 const R1 = recipe('R1', [O], [['kuřecí prsa', 200], ['rýže', 100]]); // 570 kcal at scale 1
 
+/** Offers with a discount: expensive foods (tuna, beef) are on sale, cheap staples are not. */
+const deal = (id: string, name: string, pricePerKg: number, discountPct: number): Offer => ({
+  ...offer(id, name, pricePerKg), discountPct,
+});
+const DEALS: Offer[] = [
+  deal('d1', 'Tuňák ve vlastní šťávě', 180, 55),
+  deal('d2', 'Mleté hovězí', 150, 40),
+  deal('d3', 'Skyr natural', 60, 30),
+  deal('d4', 'Krůtí prsa', 140, 35),
+  deal('d5', 'Arašídové máslo', 120, 45),
+];
+
 // ---------- slots ----------
 describe('mealSlots', () => {
   it('maps the meal count to courses in time order', () => {
@@ -154,6 +166,80 @@ describe('priceRecipe', () => {
 });
 
 // ---------- generator ----------
+describe('savings', () => {
+  const tuna = recipe('T', [C], [['tuňák', 140], ['chléb', 50]]);
+
+  it('computes the saving of a discounted ingredient against its regular price', () => {
+    const priced = priceRecipe(tuna, [deal('d1', 'Tuňák ve vlastní šťávě', 180, 55)], {});
+    const ing = priced.ingredients[0];
+    expect(ing.cost).toBeCloseTo(25.2);
+    expect(ing.discountPct).toBe(55);
+    expect(ing.saving).toBeCloseTo(25.2 / 0.45 - 25.2); // regular price minus what you pay
+    expect(priced.savings).toBeCloseTo(ing.saving);
+  });
+
+  it('has no saving for ingredients without a discount or without an offer', () => {
+    const noDeal = priceRecipe(tuna, [offer('x', 'Tuňák v oleji', 180)], {});
+    expect(noDeal.savings).toBe(0);
+    const estimate = priceRecipe(tuna, [], {});
+    expect(estimate.savings).toBe(0);
+    expect(estimate.ingredients.every((i) => i.saving === 0)).toBe(true);
+  });
+
+  it('scales the saving with the portion', () => {
+    const one = priceRecipe(tuna, [deal('d1', 'Tuňák ve vlastní šťávě', 180, 55)], {}).savings;
+    const big = priceRecipe(tuna, [deal('d1', 'Tuňák ve vlastní šťávě', 180, 55)], {}, 1.5).savings;
+    expect(big / one).toBeCloseTo(1.5, 1);
+  });
+});
+
+describe('generatePlan: choosing by price or by discounts', () => {
+  const run = (mode?: 'cheapest' | 'discount', over: Partial<PlanInput> = {}) =>
+    generatePlan({ ...INPUT, proteinMin: 1, fatMax: 500, mode, ...over }, LIBRARY, DEALS, {});
+
+  it('treats the cheapest mode as the default', () => {
+    const ids = (r: ReturnType<typeof run>) => r.days.map((d) => d.meals.map((m) => m.recipe.id));
+    expect(ids(run(undefined))).toEqual(ids(run('cheapest')));
+  });
+
+  it('saves more money on sale items when told to follow discounts', () => {
+    const cheap = run('cheapest').days[0];
+    const sale = run('discount').days[0];
+    expect(sale.savings).toBeGreaterThan(cheap.savings);
+  });
+
+  it('pays less overall when told to be cheapest', () => {
+    const cheap = run('cheapest').days[0];
+    const sale = run('discount').days[0];
+    expect(cheap.cost).toBeLessThanOrEqual(sale.cost);
+  });
+
+  it('keeps the targets, courses and variety in discount mode', () => {
+    const r = run('discount', { days: 7, kcal: 2400 });
+    for (const d of r.days) {
+      expect(Math.abs(d.kcal / 2400 - 1)).toBeLessThanOrEqual(0.05);
+      expect(d.meals.map((m) => m.slot)).toEqual(['snidane', 'obed', 'svacina', 'vecere']);
+    }
+    const uses: Record<string, number> = {};
+    r.days.forEach((d) => d.meals.forEach((m) => (uses[m.recipe.id] = (uses[m.recipe.id] ?? 0) + 1)));
+    expect(Object.keys(uses).length).toBeGreaterThanOrEqual(12);
+    expect(Math.max(...Object.values(uses))).toBeLessThanOrEqual(3);
+  });
+
+  it('falls back to a sensible plan when nothing is on sale', () => {
+    const r = generatePlan({ ...INPUT, proteinMin: 1, fatMax: 500, mode: 'discount' }, LIBRARY, [], {});
+    expect(r.days[0].meals).toHaveLength(4);
+    expect(r.days[0].savings).toBe(0);
+    expect(r.satisfied).toBe(true);
+  });
+
+  it('adds up the savings of meals, days and the whole plan', () => {
+    const r = run('discount', { days: 3 });
+    for (const d of r.days) expect(d.savings).toBeCloseTo(d.meals.reduce((a, m) => a + m.savings, 0));
+    expect(r.totalSavings).toBeCloseTo(r.days.reduce((a, d) => a + d.savings, 0));
+  });
+});
+
 describe('generatePlan: courses', () => {
   it('builds a day from breakfast, lunch, snack and dinner in time order', () => {
     const day = plan().days[0];
