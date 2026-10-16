@@ -1,10 +1,11 @@
-import { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   STORES, applyFilters, buildIndex, podiumOffers, sortOffers,
   type Category, type Offer, type SortKey,
 } from '@foodfinder/shared';
 import { OfferCard } from '../components/OfferCard';
 import { Podium } from '../components/Podium';
+import { PAGE_SIZES, paginate } from '../pagination';
 import { initialLetakState, type LetakDefaults, type LetakState } from './letakState';
 import { CATEGORY_LABELS, STORE_LABELS } from '../labels';
 
@@ -16,7 +17,6 @@ interface Props {
 
 type State = LetakState;
 
-const PAGE = 60;
 const STORAGE_KEY = 'letak-filters';
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
 
@@ -37,7 +37,8 @@ const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((x
 
 export function Letak({ offers, onAdd, defaults }: Props) {
   const [state, setState] = useState<State>(() => loadState(defaults ?? FALLBACK_DEFAULTS));
-  const [shown, setShown] = useState(PAGE);
+  const [page, setPage] = useState(1);
+  const listTop = useRef<HTMLDivElement>(null);
   const index = useMemo(() => buildIndex(offers), [offers]);
   const query = useDeferredValue(state.query);
 
@@ -63,8 +64,16 @@ export function Letak({ offers, onAdd, defaults }: Props) {
   );
 
   const set = (patch: Partial<State>) => {
-    setShown(PAGE);
+    setPage(1);
     setState((s) => ({ ...s, ...patch }));
+  };
+
+  const view = paginate(results, page, state.pageSize);
+
+  const goTo = (next: number) => {
+    setPage(next);
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    listTop.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   };
 
   const activeExtras = (state.minDiscountPct > 0 ? 1 : 0) + (state.maxPrice !== undefined ? 1 : 0);
@@ -164,15 +173,29 @@ export function Letak({ offers, onAdd, defaults }: Props) {
         </div>
       </details>
 
-      <p className="muted small" aria-live="polite">Nalezeno {results.length} nabídek</p>
+      <div className="list-meta" ref={listTop}>
+        <p className="muted small" aria-live="polite">
+          {view.total === 0 ? 'Nalezeno 0 nabídek' : `Zobrazeno ${view.from} až ${view.to} z ${view.total} nabídek`}
+        </p>
+        <label className="page-size">
+          Na stránku
+          <select value={state.pageSize} onChange={(e) => set({ pageSize: Number(e.target.value) })}>
+            {PAGE_SIZES.map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+        </label>
+      </div>
       <div className="grid">
-        {results.slice(0, shown).map((o) => (
+        {view.items.map((o) => (
           <OfferCard key={o.id} offer={o} onAdd={onAdd} />
         ))}
       </div>
-      {results.length === 0 && <p className="muted">Nic jsme nenašli. Zkus uvolnit filtry nebo vypnout Fit režim.</p>}
-      {results.length > shown && (
-        <button className="primary more" onClick={() => setShown((n) => n + PAGE)}>Zobrazit další</button>
+      {view.total === 0 && <p className="muted">Nic jsme nenašli. Zkus uvolnit filtry nebo vypnout Fit režim.</p>}
+      {view.pageCount > 1 && (
+        <nav className="pager" aria-label="Stránkování">
+          <button className="secondary" disabled={view.page <= 1} onClick={() => goTo(view.page - 1)}>Předchozí</button>
+          <span className="pager-state">Strana <b className="num">{view.page}</b> z {view.pageCount}</span>
+          <button className="secondary" disabled={view.page >= view.pageCount} onClick={() => goTo(view.page + 1)}>Další</button>
+        </nav>
       )}
     </section>
   );

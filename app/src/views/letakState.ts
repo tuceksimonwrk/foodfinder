@@ -1,9 +1,12 @@
 import type { Filters, SortKey, Store } from '@foodfinder/shared';
+import { DEFAULT_PAGE_SIZE, parsePageSize } from '../pagination';
 
 export interface LetakState extends Filters {
   sort: SortKey;
   /** True once the user changed the store filter, so settings no longer override it. */
   storesTouched: boolean;
+  /** Offers shown per page; one of PAGE_SIZES. */
+  pageSize: number;
 }
 
 export interface LetakDefaults {
@@ -16,11 +19,13 @@ export function initialLetakState(defaults: LetakDefaults, saved: Partial<LetakS
   const base: LetakState = {
     query: '', stores: defaults.favoriteStores, categories: [], minDiscountPct: 0, fit: false,
     minProtein: defaults.minProtein, maxFat: defaults.maxFat, sort: 'relevance', storesTouched: false,
+    pageSize: DEFAULT_PAGE_SIZE,
   };
   if (!saved || typeof saved !== 'object') return base;
   const merged: LetakState = { ...base, ...saved, query: '' };
   if (!saved.storesTouched) merged.stores = defaults.favoriteStores;
   merged.minProtein = defaults.minProtein;
   merged.maxFat = defaults.maxFat;
+  merged.pageSize = parsePageSize(saved.pageSize);
   return merged;
 }

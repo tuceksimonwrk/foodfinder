@@ -29,6 +29,15 @@ describe('initialLetakState', () => {
     expect([s.minProtein, s.maxFat]).toEqual([15, 8]);
   });
 
+  it('defaults to 48 items per page', () => expect(initialLetakState(defaults, null).pageSize).toBe(48));
+
+  it('restores a saved page size', () => expect(initialLetakState(defaults, { pageSize: 24 }).pageSize).toBe(24));
+
+  it('ignores an invalid saved page size', () => {
+    expect(initialLetakState(defaults, { pageSize: 7 }).pageSize).toBe(48);
+    expect(initialLetakState(defaults, { pageSize: '24' as unknown as number }).pageSize).toBe(48);
+  });
+
   it('never restores the search query', () =>
     expect(initialLetakState(defaults, { query: 'kuře' }).query).toBe(''));
 

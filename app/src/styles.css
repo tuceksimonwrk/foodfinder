@@ -300,7 +300,14 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 }
 .add.added { background: var(--good-fill); color: #fff; animation: pop 0.35s var(--ease); }
 @keyframes pop { 0% { transform: scale(0.94); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
-.more { display: block; margin: 20px auto; }
+.list-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 4px 0 8px; scroll-margin-top: 72px; }
+.list-meta p { margin: 0; }
+.page-size { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.page-size select { min-height: 40px; padding: 6px 10px; }
+.pager { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 24px 0 8px; flex-wrap: wrap; }
+.pager-state { font-weight: 600; color: var(--muted); }
+.pager-state .num { font-size: 22px; color: var(--text); }
+.pager button:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ---------- meal plan ---------- */
 .plan { margin-top: 12px; }
