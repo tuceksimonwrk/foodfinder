@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { groupByStore, itemPrice, totalPrice, type Store } from '@foodfinder/shared';
-import { formatNumber, formatPrice } from '../format';
+import { formatPrice } from '../format';
+import { AmountControl } from '../components/AmountControl';
 import { RohlikLink } from '../components/RohlikLink';
 import { STORE_LABELS } from '../labels';
 import { rohlikSearchTerm } from '../rohlik';
@@ -8,7 +9,7 @@ import { shoppingListText } from '../shoppingText';
 import type { ShoppingList } from '../store/shoppingList';
 
 export function Seznam({ list }: { list: ShoppingList }) {
-  const { items, toggle, remove, clear } = list;
+  const { items, toggle, remove, step, setAmountOf, clear } = list;
   // 'done' flashes after a successful copy; 'manual' shows the text for copying by hand when the browser blocks the clipboard
   const [copy, setCopy] = useState<'idle' | 'done' | 'manual'>('idle');
 
@@ -50,11 +51,9 @@ export function Seznam({ list }: { list: ShoppingList }) {
                   <li key={i.id} className={i.checked ? 'done' : undefined}>
                     <label>
                       <input type="checkbox" checked={i.checked} onChange={() => toggle(i.id)} />
-                      <span className="label-block">
-                        <span className="label">{i.label}</span>
-                        {i.grams !== undefined && <span className="muted small">{formatNumber(i.grams)} g</span>}
-                      </span>
+                      <span className="label">{i.label}</span>
                     </label>
+                    <AmountControl item={i} onStep={(d) => step(i.id, d)} onSet={(v) => setAmountOf(i.id, v)} />
                     <span className="item-price">
                       {price !== undefined ? `${i.estimated ? '~' : ''}${formatPrice(price)}` : '–'}
                     </span>

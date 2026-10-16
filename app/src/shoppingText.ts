@@ -13,15 +13,21 @@ function formatAmount(grams: number): string {
  * assistant or a note. Checked-off items are left out and the same product from several stores is added up.
  */
 export function shoppingListText(items: ListItem[]): string {
-  const lines = new Map<string, { term: string; grams?: number }>();
+  const lines = new Map<string, { term: string; grams?: number; pieces: number }>();
   for (const item of items) {
     if (item.checked) continue;
     const term = (item.searchTerm ?? rohlikSearchTerm(item.label)).trim();
     if (!term) continue;
     const key = normalizeText(term);
-    const line = lines.get(key) ?? { term };
+    const line = lines.get(key) ?? { term, pieces: 0 };
     if (item.grams !== undefined) line.grams = (line.grams ?? 0) + item.grams;
+    else line.pieces += item.count ?? 1;
     lines.set(key, line);
   }
-  return [...lines.values()].map((l) => (l.grams === undefined ? l.term : `${l.term} ${formatAmount(l.grams)}`)).join('\n');
+  return [...lines.values()]
+    .map((l) => {
+      if (l.grams !== undefined) return `${l.term} ${formatAmount(l.grams)}`;
+      return l.pieces > 1 ? `${l.term} ${l.pieces} ks` : l.term;
+    })
+    .join('\n');
 }

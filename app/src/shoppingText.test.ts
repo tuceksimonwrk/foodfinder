@@ -45,8 +45,14 @@ describe('shoppingListText', () => {
   it('rounds amounts to 5 g like a kitchen scale', () =>
     expect(shoppingListText([item({ searchTerm: 'banán', grams: 262.4 }), item({ searchTerm: 'okurka', grams: 3 })])).toBe('banán 260 g\nokurka 5 g'));
 
-  it('writes just the name when the amount is unknown, once per product', () =>
-    expect(shoppingListText([item({ searchTerm: 'koření' }), item({ searchTerm: 'Koření' })])).toBe('koření'));
+  it('writes just the name for a single piece', () =>
+    expect(shoppingListText([item({ searchTerm: 'koření' }), item({ searchTerm: 'houska', count: 1 })])).toBe('koření\nhouska'));
+
+  it('writes the number of pieces for products counted in pieces', () =>
+    expect(shoppingListText([item({ searchTerm: 'houska', count: 3 })])).toBe('houska 3 ks'));
+
+  it('adds up pieces of the same product from several stores', () =>
+    expect(shoppingListText([item({ searchTerm: 'Koření' }), item({ searchTerm: 'koření', count: 2 })])).toBe('Koření 3 ks'));
 
   it('is empty for an empty or fully checked list', () => {
     expect(shoppingListText([])).toBe('');

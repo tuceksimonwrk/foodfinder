@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { addOrMerge, mergeLoaded, type ListItem } from '@foodfinder/shared';
+import { addOrMerge, changeAmount, mergeLoaded, setAmount, type ListItem } from '@foodfinder/shared';
 import { getJSON, setJSON } from './db';
 
 const KEY = 'shopping-list';
@@ -13,6 +13,8 @@ export interface ShoppingList {
   addMany: (items: ListItem[]) => void;
   toggle: (id: string) => void;
   remove: (id: string) => void;
+  step: (id: string, delta: 1 | -1) => void;
+  setAmountOf: (id: string, value: number) => void;
   clear: () => void;
 }
 
@@ -39,7 +41,15 @@ export function useShoppingList(): ShoppingList {
     [],
   );
   const remove = useCallback((id: string) => setItems((l) => l.filter((i) => i.id !== id)), []);
+  const step = useCallback(
+    (id: string, delta: 1 | -1) => setItems((l) => l.map((i) => (i.id === id ? changeAmount(i, delta) : i))),
+    [],
+  );
+  const setAmountOf = useCallback(
+    (id: string, value: number) => setItems((l) => l.map((i) => (i.id === id ? setAmount(i, value) : i))),
+    [],
+  );
   const clear = useCallback(() => setItems([]), []);
 
-  return { items, add, addMany, toggle, remove, clear };
+  return { items, add, addMany, toggle, remove, step, setAmountOf, clear };
 }

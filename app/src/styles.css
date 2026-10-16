@@ -498,3 +498,26 @@ button.primary.copied { background: var(--good-fill); color: #fff; animation: po
 .sub-title { font-size: 18px; margin: 18px 0 6px; }
 .meat-form { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 .meat-form label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 600; color: var(--muted); max-width: 200px; }
+
+/* ---------- amount control in the shopping list ---------- */
+.list-group li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; column-gap: 8px; row-gap: 2px; align-items: center;
+  padding: 8px 8px 8px 12px;
+}
+.list-group li > label { grid-column: 1; grid-row: 1; }
+.list-group li > .qty { grid-column: 1; grid-row: 2; }
+.list-group li > .item-price, .list-group li > .rohlik-link, .list-group li > button.icon { grid-row: 1 / span 2; align-self: center; }
+.qty { display: block; }
+.qty-controls { display: flex; align-items: center; gap: 6px; }
+.qty-btn {
+  width: 34px; height: 34px; padding: 0; display: grid; place-items: center; border: 1.5px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); font: 700 20px/1 var(--font-display); cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+.qty-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--surface-2); }
+.qty-btn:active:not(:disabled) { transform: scale(0.92); }
+.qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.qty-input { width: 62px; min-height: 34px; padding: 4px 6px; text-align: center; font: 700 17px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.qty-unit { font-weight: 600; color: var(--muted); }
+.qty-packs { display: block; margin-top: 2px; }
+.list-group li.done .qty { opacity: 0.55; }
