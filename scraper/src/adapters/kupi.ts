@@ -66,6 +66,20 @@ function parsePrice(text: string): number | undefined {
   return m ? parseFloat(m[1].replace(',', '.')) : undefined;
 }
 
+const IMAGE_HOST = 'img.kupi.cz';
+
+/** Product photo of a row (lazy-loaded via data-src); only https images on Kupi's CDN are kept. */
+function parseImageUrl(src: string | undefined): string | undefined {
+  if (!src) return undefined;
+  try {
+    const url = new URL(src, BASE);
+    const isPhoto = url.protocol === 'https:' && url.hostname === IMAGE_HOST && /\.(png|jpe?g|webp)$/i.test(url.pathname);
+    return isPhoto ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function mapStore(name: string): Store | null {
   const n = clean(name).toLowerCase();
   return SHOP_PREFIXES.find(([prefix]) => n.startsWith(prefix))?.[1] ?? null;
@@ -82,6 +96,15 @@ export function parseKupiPage(html: string, ctx: PageContext): RawOffer[] {
   const seen = new Set<string>();
   const offers: RawOffer[] = [];
   const today = iso(ctx.now);
+
+  // Product photos live in product blocks; sponsored rows sit outside them, so match by product id.
+  const photoByProduct = new Map<string, string>();
+  $('.product--wrap').each((_, el) => {
+    const wrap = $(el);
+    const id = wrap.attr('data-product-id');
+    const src = wrap.find('.product_image img[data-src]').first().attr('data-src');
+    if (id && src) photoByProduct.set(id, src);
+  });
 
   $('.discount_row').each((_, el) => {
     const row = $(el);
@@ -108,6 +131,10 @@ export function parseKupiPage(html: string, ctx: PageContext): RawOffer[] {
       validFrom: validity.from ?? today,
       validTo: validity.to,
       sourceUrl: href ? new URL(href, BASE).toString() : ctx.pageUrl,
+      imageUrl: parseImageUrl(
+        photoByProduct.get(row.attr('data-product') ?? '') ??
+          row.closest('.product--wrap').find('.product_image img[data-src]').first().attr('data-src'),
+      ),
       categoryHint: ctx.categoryHint,
     };
     const key = offerKey(offer);

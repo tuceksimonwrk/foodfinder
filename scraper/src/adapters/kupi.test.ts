@@ -45,6 +45,35 @@ describe('parseKupiPage', () => {
     expect(ham!.originalPrice).toBeCloseTo(29.7, 1);
   });
 
+  it('extracts the product image of a row', () => {
+    const ham = offers.find((o) => o.name === 'Šunka dušená nejvyšší jakosti');
+    expect(ham?.imageUrl).toBe('https://img.kupi.cz/kupi/thumbs/sunka-dusena-nejvyssi-jakosti_170_340.png');
+  });
+
+  it('only keeps real Kupi images, never the "no image" placeholder', () => {
+    expect(offers.filter((o) => o.imageUrl).length).toBeGreaterThan(offers.length / 2);
+    for (const o of [...offers, ...parseKupiPage(fixture('kupi-mlecne-albert.html'), ctx)]) {
+      if (o.imageUrl) expect(o.imageUrl).toMatch(/^https:\/\/img\.kupi\.cz\/.+\.(png|jpe?g|webp)$/);
+    }
+  });
+
+  it('drops image addresses on other hosts or schemes', () => {
+    const row = (src: string) => `<div class="product--wrap">
+      <div class="product_image"><img src="/img/no_img/no_discounts.png" data-src="${src}"></div>
+      <div class="product_discounts"><div class="discount_row" data-discount="1">
+        <span class="discounts_shop_name"><a><span>Lidl</span></a></span>
+        <a class="btn_list_add" data-product="Test"></a>
+        <strong class="discount_price_value">10,00 Kč</strong>
+        <div class="discounts_validity"><div style="x">platí do úterý 20. 10.</div></div>
+      </div></div></div>`;
+    for (const bad of ['http://img.kupi.cz/a.png', 'https://evil.example/a.png', 'javascript:alert(1)', '/img/no_img/no_discounts.png']) {
+      expect(parseKupiPage(row(bad), ctx)[0].imageUrl, bad).toBeUndefined();
+    }
+    expect(parseKupiPage(row('https://img.kupi.cz/kupi/thumbs/x_170_340.jpg'), ctx)[0].imageUrl).toBe(
+      'https://img.kupi.cz/kupi/thumbs/x_170_340.jpg',
+    );
+  });
+
   it('does not emit duplicates', () => {
     const albert = parseKupiPage(fixture('kupi-mlecne-albert.html'), ctx);
     const keys = albert.map((o) => `${o.store}|${o.name}|${o.price}|${o.quantityText}|${o.validTo}`);

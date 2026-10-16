@@ -41,6 +41,7 @@ describe('adapter contract', () => {
           expect(o.validTo).toMatch(ISO);
           expect(o.validTo >= o.validFrom).toBe(true);
           expect(o.sourceUrl).toMatch(/^https?:\/\//);
+          if (o.imageUrl !== undefined) expect(o.imageUrl).toMatch(/^https:\/\//);
         }
       });
 

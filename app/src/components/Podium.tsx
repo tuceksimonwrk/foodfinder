@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Offer, PodiumEntry } from '@foodfinder/shared';
 import { formatNumber, formatPrice } from '../format';
 import { STORE_LABELS } from '../labels';
+import { Thumb } from './Thumb';
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -38,6 +39,7 @@ function Slab({ entry, rank, onAdd }: { entry: PodiumEntry; rank: number; onAdd:
   return (
     <article className={`slab rank-${rank}`} style={{ ['--i' as string]: rank - 1 }}>
       <span className="slab-rank" aria-hidden="true">{rank}</span>
+      <Thumb src={offer.imageUrl} className="slab-thumb" />
       <div className="slab-cost">
         {formatPrice(cost)}
         <small>za 30 g bílkovin</small>

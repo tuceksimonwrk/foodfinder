@@ -3,6 +3,7 @@ import { czkPer30gProtein, proteinEnergyPct, toIsoDate, type Offer } from '@food
 import { formatNumber, formatPrice, formatValidity } from '../format';
 import { CATEGORY_LABELS, nutritionSourceLabel, STORE_LABELS } from '../labels';
 import { CheckIcon } from './Icons';
+import { Thumb } from './Thumb';
 
 interface Props {
   offer: Offer;
@@ -26,6 +27,9 @@ export function OfferCard({ offer, onAdd }: Props) {
         <span className="store">{STORE_LABELS[offer.store]}</span>
         <span className="muted">{CATEGORY_LABELS[offer.category]}, {formatValidity(offer, toIsoDate(new Date()))}</span>
       </div>
+      <div className="card-top">
+        <Thumb src={offer.imageUrl} />
+        <div className="card-main">
       <h3 className="card-title">
         <a href={offer.sourceUrl} target="_blank" rel="noreferrer">{offer.name}</a>
       </h3>
@@ -40,6 +44,8 @@ export function OfferCard({ offer, onAdd }: Props) {
       </div>
       <div className="muted small">
         {offer.pricePerKg !== undefined ? `${formatPrice(offer.pricePerKg)} za kg` : 'cena za kg neznámá'}
+      </div>
+        </div>
       </div>
 
       {n ? (

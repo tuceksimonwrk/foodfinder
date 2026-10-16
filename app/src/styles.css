@@ -202,7 +202,7 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 @media (min-width: 768px) { .podium { grid-template-columns: 1.25fr 1fr 1fr; align-items: stretch; } }
 .slab {
   --skew: 14px;
-  position: relative; overflow: hidden; padding: 10px 28px 10px 14px; min-height: 92px;
+  position: relative; overflow: hidden; padding: 10px 112px 10px 14px; min-height: 92px;
   display: flex; flex-direction: column; justify-content: center; gap: 2px;
   clip-path: polygon(0 0, 100% 0, calc(100% - var(--skew)) 100%, 0 100%);
   background: var(--surface); color: var(--text); border-left: 6px solid var(--text);
@@ -212,12 +212,13 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 .slab.rank-2 { background: var(--ink); color: #fff; border-left-color: #fff; }
 @media (prefers-color-scheme: dark) { .slab.rank-2 { background: var(--surface-2); } }
 @keyframes slab-in { from { opacity: 0; transform: translateX(-28px); } }
+.slab-thumb { position: absolute; right: 30px; top: 50%; transform: translateY(-50%); width: 76px; height: 76px; z-index: 1; }
 .slab-rank {
   position: absolute; right: 18px; bottom: -14px; font: italic 800 96px/1 var(--font-display); opacity: 0.16; pointer-events: none;
 }
 .slab-cost { font: 800 36px/1 var(--font-display); font-style: italic; font-variant-numeric: tabular-nums; }
 .slab.rank-1 .slab-cost { font-size: 48px; }
-.slab-cost small { font: 600 16px var(--font-body); font-style: normal; opacity: 0.85; margin-left: 4px; }
+.slab-cost small { display: block; font: 600 15px var(--font-body); font-style: normal; opacity: 0.85; margin-top: 4px; }
 .slab-name { font-weight: 700; line-height: 1.2; max-width: 22ch; }
 .slab-meta { font-size: 14px; opacity: 0.85; }
 .slab button { align-self: flex-start; margin-top: 4px; padding: 4px 12px; min-height: 34px; font-size: 15px; }
@@ -340,3 +341,17 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 }
 
 .view-title { font: italic 800 30px/1 var(--font-display); margin-bottom: 12px; }
+
+/* ---------- product photos ---------- */
+.card-top { display: flex; gap: 12px; align-items: flex-start; }
+.card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.thumb {
+  flex: none; width: 84px; height: 84px; border-radius: var(--radius); background: #fff;
+  border: 1.5px solid var(--line); display: grid; place-items: center; overflow: hidden;
+}
+.thumb img { width: 100%; height: 100%; object-fit: contain; animation: thumb-in 0.35s var(--ease) both; }
+@keyframes thumb-in { from { opacity: 0; transform: scale(0.94); } }
+.thumb-fallback { color: #9aa8bd; display: grid; place-items: center; }
+.thumb-fallback svg { width: 34px; height: 34px; }
+.slab-thumb { width: 76px; height: 76px; border-color: transparent; }
+.slab-thumb img { width: 100%; height: 100%; }
