@@ -31,5 +31,6 @@ export function normalizeOffer(raw: RawOffer): Offer {
     category: categorize(raw.name, raw.categoryHint),
     imageUrl: raw.imageUrl,
     sourceUrl: raw.sourceUrl,
+    ean: raw.ean,
   };
 }

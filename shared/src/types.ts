@@ -52,6 +52,7 @@ export interface Offer {
   category: Category;
   imageUrl?: string;
   sourceUrl: string;
+  ean?: string;
   nutrition?: Nutrition;
 }
 
