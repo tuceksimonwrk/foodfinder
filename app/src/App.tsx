@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { applyLocalOverrides, offerToListItem, updatePriceBook, type ListItem, type Offer, type PriceBook, type Recipe } from '@foodfinder/shared';
+import { applyLocalMeat, applyLocalOverrides, offerToListItem, updatePriceBook, type ListItem, type Offer, type PriceBook, type Recipe } from '@foodfinder/shared';
 import { loadOffers, loadRecipes, type LoadResult } from './data/loadData';
 import { getJSON, setJSON } from './store/db';
-import { useLocalOverrides, useSettings } from './store/settings';
+import { useLocalMeat, useLocalOverrides, useSettings } from './store/settings';
 import { useTheme } from './store/useTheme';
 import { newId, useShoppingList } from './store/shoppingList';
 import { Jidelnicek } from './views/Jidelnicek';
@@ -36,6 +36,7 @@ export function App() {
   const theme = useTheme();
   const [settings, updateSettings, settingsLoaded] = useSettings();
   const [overrides, setOverrides] = useLocalOverrides();
+  const [meat, setMeat] = useLocalMeat();
 
   useEffect(() => {
     loadOffers().then(setData).catch((e: Error) => setError(e.message));
@@ -62,7 +63,10 @@ export function App() {
   }, [toast]);
 
   const rawOffers: Offer[] = data?.offers ?? [];
-  const offers = useMemo(() => applyLocalOverrides(rawOffers, overrides), [rawOffers, overrides]);
+  const offers = useMemo(
+    () => applyLocalMeat(applyLocalOverrides(rawOffers, overrides), meat),
+    [rawOffers, overrides, meat],
+  );
 
   const addOffer = useCallback(
     (o: Offer) => {
@@ -110,6 +114,8 @@ export function App() {
             offers={rawOffers}
             overrides={overrides}
             onOverridesChange={setOverrides}
+            meat={meat}
+            onMeatChange={setMeat}
           />
         );
     }

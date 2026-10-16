@@ -11,3 +11,14 @@ export function applyLocalOverrides(offers: Offer[], local: NutritionOverrides):
     return fix ? { ...o, nutrition: { ...fix, source: 'override', confidence: 1 } } : o;
   });
 }
+
+/** normalizeKey(name) -> meat share in percent, typed in by the user from the package label. */
+export type MeatOverrides = Record<string, number>;
+
+export function applyLocalMeat(offers: Offer[], meat: MeatOverrides): Offer[] {
+  if (Object.keys(meat).length === 0) return offers;
+  return offers.map((o) => {
+    const pct = meat[normalizeKey(o.name)];
+    return pct === undefined ? o : { ...o, meatPct: pct };
+  });
+}

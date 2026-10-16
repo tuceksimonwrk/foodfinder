@@ -486,3 +486,15 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 button.primary.copied { background: var(--good-fill); color: #fff; animation: pop 0.35s var(--ease); }
 .manual-copy { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; font-size: 14px; font-weight: 600; color: var(--muted); }
 .manual-copy textarea { font: inherit; color: var(--text); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 10px; width: 100%; }
+
+/* ---------- ham info ---------- */
+.ham-info { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 2px; }
+.meat-pct { font-size: 15px; }
+.meat-pct .num { font-size: 22px; font-style: italic; color: var(--good); }
+.meat-pct small { color: var(--muted); font-size: 13px; }
+.grade-pill {
+  padding: 3px 10px; font-size: 13px; font-weight: 600; background: var(--surface-2); border-left: 4px solid var(--good-fill); border-radius: 2px;
+}
+.sub-title { font-size: 18px; margin: 18px 0 6px; }
+.meat-form { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.meat-form label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 600; color: var(--muted); max-width: 200px; }

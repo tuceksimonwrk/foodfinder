@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { STORES, type NutritionOverrides, type Offer } from '@foodfinder/shared';
+import { STORES, type MeatOverrides, type NutritionOverrides, type Offer } from '@foodfinder/shared';
 import { STORE_LABELS } from '../labels';
 import type { Settings } from '../store/settings';
+import { MeatSection } from './MeatSection';
 import { correctableProducts } from './correctable';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   offers: Offer[];
   overrides: NutritionOverrides;
   onOverridesChange: (next: NutritionOverrides) => void;
+  meat: MeatOverrides;
+  onMeatChange: (next: MeatOverrides) => void;
 }
 
 const MAX_LISTED = 25;
@@ -53,7 +56,7 @@ function MacroForm({ name, onSave }: { name: string; onSave: (m: { kcal: number;
   );
 }
 
-export function Nastaveni({ settings, onChange, offers, overrides, onOverridesChange }: Props) {
+export function Nastaveni({ settings, onChange, offers, overrides, onOverridesChange, meat, onMeatChange }: Props) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState<string | null>(null);
   const [includeEstimates, setIncludeEstimates] = useState(false);
@@ -141,6 +144,8 @@ export function Nastaveni({ settings, onChange, offers, overrides, onOverridesCh
           </ul>
         </>
       )}
+
+      <MeatSection offers={offers} meat={meat} onChange={onMeatChange} />
     </section>
   );
 }

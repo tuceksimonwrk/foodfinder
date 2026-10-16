@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { czkPer30gProtein, proteinEnergyPct, toIsoDate, type Offer } from '@foodfinder/shared';
+import { czkPer30gProtein, hamGrade, proteinEnergyPct, toIsoDate, type Offer } from '@foodfinder/shared';
 import { formatNumber, formatPrice, formatValidity } from '../format';
 import { CATEGORY_LABELS, nutritionSourceLabel, STORE_LABELS } from '../labels';
 import { CheckIcon } from './Icons';
@@ -13,6 +13,7 @@ interface Props {
 export function OfferCard({ offer, onAdd }: Props) {
   const n = offer.nutrition;
   const proteinCost = czkPer30gProtein(offer);
+  const grade = hamGrade(offer.name);
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
@@ -47,6 +48,17 @@ export function OfferCard({ offer, onAdd }: Props) {
       </div>
         </div>
       </div>
+
+      {(grade || offer.meatPct !== undefined) && (
+        <div className="ham-info">
+          {offer.meatPct !== undefined && (
+            <span className="meat-pct">
+              <b className="num">{String(offer.meatPct).replace('.', ',')} %</b> masa <small>(z etikety)</small>
+            </span>
+          )}
+          {grade && <span className="grade-pill" title="Podle vyhlášky 69/2016 Sb. se třída šunky určuje obsahem svalových bílkovin">{grade.label}</span>}
+        </div>
+      )}
 
       {n ? (
         <div className="protein-block">

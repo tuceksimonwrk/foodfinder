@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { NutritionOverrides, Store } from '@foodfinder/shared';
+import type { MeatOverrides, NutritionOverrides, Store } from '@foodfinder/shared';
 import { getJSON, setJSON } from './db';
 
 export interface Settings {
@@ -47,4 +47,9 @@ export function useSettings(): [Settings, (patch: Partial<Settings>) => void, bo
 export function useLocalOverrides(): [NutritionOverrides, (next: NutritionOverrides) => void] {
   const [overrides, save] = usePersisted<NutritionOverrides>('local-overrides', {});
   return [overrides, save];
+}
+
+export function useLocalMeat(): [MeatOverrides, (next: MeatOverrides) => void] {
+  const [meat, save] = usePersisted<MeatOverrides>('local-meat', {});
+  return [meat, save];
 }

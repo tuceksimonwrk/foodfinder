@@ -54,6 +54,8 @@ export interface Offer {
   sourceUrl: string;
   ean?: string;
   nutrition?: Nutrition;
+  /** Meat share in percent as read from the label and entered by the user (hams). */
+  meatPct?: number;
 }
 
 export interface Ingredient {
