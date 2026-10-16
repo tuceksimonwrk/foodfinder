@@ -81,7 +81,7 @@ export function Nastaveni({ settings, onChange, offers, overrides, onOverridesCh
 
   return (
     <section>
-      <h1>Nastavení</h1>
+      <h2 className="view-title">Nastavení</h2>
 
       <h2 className="section-title">Denní cíle (výchozí pro jídelníček)</h2>
       <div className="controls">

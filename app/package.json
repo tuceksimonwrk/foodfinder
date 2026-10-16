@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
     "@foodfinder/shared": "*",
     "idb-keyval": "^6.3.0",
     "minisearch": "^7.2.0",

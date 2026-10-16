@@ -13,8 +13,8 @@ export default defineConfig({
         short_name: 'Fit leták',
         description: 'Akční ceny, fit produkty a jídelníčky podle aktuálních letáků.',
         lang: 'cs',
-        theme_color: '#16a34a',
-        background_color: '#f6f7f4',
+        theme_color: '#0e1f3d',
+        background_color: '#f2f5f9',
         display: 'standalone',
         start_url: '.',
         scope: '.',
@@ -24,7 +24,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png}'],
+        globPatterns: ['**/*.{js,css,html,png,woff2}'],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.includes('/data/') && url.pathname.endsWith('.json'),

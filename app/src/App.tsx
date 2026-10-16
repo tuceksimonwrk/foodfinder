@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { applyLocalOverrides, offerToListItem, updatePriceBook, type ListItem, type Offer, type PriceBook, type Recipe } from '@foodfinder/shared';
 import { loadOffers, loadRecipes, type LoadResult } from './data/loadData';
@@ -5,21 +6,22 @@ import { getJSON, setJSON } from './store/db';
 import { useLocalOverrides, useSettings } from './store/settings';
 import { newId, useShoppingList } from './store/shoppingList';
 import { Jidelnicek } from './views/Jidelnicek';
+import { ListIcon, PlateIcon, SlidersIcon, TagIcon } from './components/Icons';
 import { Letak } from './views/Letak';
 import { Nastaveni } from './views/Nastaveni';
 import { Seznam } from './views/Seznam';
 
 type Tab = 'letak' | 'jidelnicek' | 'seznam' | 'nastaveni';
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'letak', label: 'Leták' },
-  { id: 'jidelnicek', label: 'Jídelníček' },
-  { id: 'seznam', label: 'Seznam' },
-  { id: 'nastaveni', label: 'Nastavení' },
+const TABS: { id: Tab; label: string; icon: () => ReactElement }[] = [
+  { id: 'letak', label: 'Leták', icon: TagIcon },
+  { id: 'jidelnicek', label: 'Jídelníček', icon: PlateIcon },
+  { id: 'seznam', label: 'Seznam', icon: ListIcon },
+  { id: 'nastaveni', label: 'Nastavení', icon: SlidersIcon },
 ];
 
 const formatStamp = (iso: string) =>
-  new Date(iso).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  new Date(iso).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export function App() {
   const [tab, setTab] = useState<Tab>('letak');
@@ -110,26 +112,45 @@ export function App() {
     }
   };
 
+  const tabIndex = TABS.findIndex((t) => t.id === tab);
+
   return (
-    <div className="app">
-      {data && (
-        <div className={data.fromCache ? 'banner offline' : 'banner'}>
-          Data z {formatStamp(data.generatedAt)}
-          {data.fromCache ? ' · offline kopie' : ''} · {offers.length} nabídek
+    <>
+      <header className="topbar">
+        <div className="topbar-inner">
+          <h1 className="brand"><span className="brand-mark" aria-hidden="true" />Fit leták</h1>
+          {data && (
+            <div className={data.fromCache ? 'freshness offline' : 'freshness'}>
+              <div>Data z {formatStamp(data.generatedAt)}</div>
+              <div>{data.fromCache ? 'offline kopie, ' : ''}{offers.length} nabídek</div>
+            </div>
+          )}
         </div>
-      )}
-      {error && <div className="error">{error}. Zkus to prosím znovu, až budeš online.</div>}
-      {!data && !error && <p>Načítám nabídky…</p>}
-      {data && settingsLoaded && <main>{renderTab()}</main>}
+      </header>
+
+      <div className="nav-wrap">
+        <nav className="nav" aria-label="Hlavní navigace" style={{ ['--i' as string]: tabIndex }}>
+          <span className="nav-indicator" aria-hidden="true" />
+          {TABS.map((t) => (
+            <button key={t.id} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
+              <t.icon />
+              {t.label}
+              {t.id === 'seznam' && list.items.length > 0 && (
+                <span key={list.items.length} className="nav-badge" aria-label={`${list.items.length} položek`}>
+                  {list.items.length}
+                </span>
+              )}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      <div className="app">
+        {error && <div className="error">{error}. Zkus to prosím znovu, až budeš online.</div>}
+        {!data && !error && <p className="muted">Načítám nabídky…</p>}
+        {data && settingsLoaded && <main key={tab} className="view">{renderTab()}</main>}
+      </div>
       {toast && <div className="toast" role="status">{toast}</div>}
-      <nav className="nav">
-        {TABS.map((t) => (
-          <button key={t.id} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
-            {t.label}
-            {t.id === 'seznam' && list.items.length > 0 ? ` (${list.items.length})` : ''}
-          </button>
-        ))}
-      </nav>
-    </div>
+    </>
   );
 }

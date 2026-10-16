@@ -3,6 +3,7 @@ import {
   activeOffers, generatePlan, ingredientsToListItems, toIsoDate,
   type ListItem, type Offer, type PlanResult, type PriceBook, type PricedRecipe, type Recipe,
 } from '@foodfinder/shared';
+import { Meter } from '../components/Meter';
 import { formatNumber, formatPrice } from '../format';
 import { STORE_LABELS } from '../labels';
 import { newId } from '../store/shoppingList';
@@ -34,14 +35,19 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
   const [excluded, setExcluded] = useState('');
   const [budget, setBudget] = useState('');
   const [plan, setPlan] = useState<PlanResult | null>(null);
+  const [targets, setTargets] = useState<PlanDefaults>(defaults);
 
   const generate = () => {
+    const goal = {
+      kcal: num(kcal, defaults.kcal),
+      proteinMin: num(proteinMin, defaults.proteinMin),
+      fatMax: num(fatMax, defaults.fatMax),
+    };
+    setTargets(goal);
     setPlan(
       generatePlan(
         {
-          kcal: num(kcal, defaults.kcal),
-          proteinMin: num(proteinMin, defaults.proteinMin),
-          fatMax: num(fatMax, defaults.fatMax),
+          ...goal,
           meals,
           days,
           excluded: excluded.split(',').map((s) => s.trim()).filter(Boolean),
@@ -59,7 +65,7 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
 
   return (
     <section>
-      <h1>Jídelníček</h1>
+      <h2 className="view-title">Jídelníček</h2>
       <div className="controls">
         <label>Kalorie<input type="number" min={0} value={kcal} onChange={(e) => setKcal(e.target.value)} /></label>
         <label>Bílkoviny ≥ (g)<input type="number" min={0} value={proteinMin} onChange={(e) => setProteinMin(e.target.value)} /></label>
@@ -95,21 +101,26 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
           )}
           {plan.days.length > 0 && <p className="total">Celkem {formatPrice(plan.totalCost)}</p>}
           {plan.days.map((day, idx) => (
-            <article key={idx} className="day">
-              <header>
+            <article key={idx} className="day" style={{ animationDelay: `${idx * 70}ms` }}>
+              <header className="day-head">
                 <h2>{plan.days.length > 1 ? `Den ${idx + 1}` : 'Dnešní plán'}</h2>
-                <span className="muted small">
-                  {formatNumber(day.kcal)} kcal · {formatNumber(day.protein)} g bílkovin · {formatNumber(day.fat)} g tuku · {formatPrice(day.cost)}
-                </span>
+                <span className="num">{formatPrice(day.cost)}</span>
               </header>
+              {day.meals.length > 0 && (
+                <div className="scoreboard">
+                  <Meter label="Kalorie" unit="kcal" kind="range" value={day.kcal} target={targets.kcal} />
+                  <Meter label="Bílkoviny" unit="g" kind="min" value={day.protein} target={targets.proteinMin} />
+                  <Meter label="Tuk" unit="g" kind="max" value={day.fat} target={targets.fatMax} />
+                </div>
+              )}
               {day.meals.map((m) => (
                 <div key={m.recipe.id} className="meal">
                   <div className="meal-head">
                     <b>{m.recipe.name}</b>
-                    <span>{m.estimated ? '~' : ''}{formatPrice(m.cost)}</span>
+                    <span className="num">{m.estimated ? '~' : ''}{formatPrice(m.cost)}</span>
                   </div>
                   <div className="muted small">
-                    {formatNumber(m.kcal)} kcal · {formatNumber(m.protein)} g bílkovin · {formatNumber(m.fat)} g tuku
+                    {formatNumber(m.kcal)} kcal, {formatNumber(m.protein)} g bílkovin, {formatNumber(m.fat)} g tuku
                   </div>
                   <ul className="ingredients">
                     {m.ingredients.map((i) => (
@@ -119,11 +130,13 @@ export function Jidelnicek({ offers, recipes, priceBook, onAddItems, defaults = 
                       </li>
                     ))}
                   </ul>
-                  <button className="secondary" onClick={() => addMeal(m)}>Naklikat do seznamu</button>
+                  <button className="secondary" onClick={() => addMeal(m)}>Přidat jídlo do seznamu</button>
                 </div>
               ))}
               {day.meals.length > 0 && (
-                <button className="primary" onClick={() => addDay(day)}>Celý den do seznamu</button>
+                <div className="day-actions">
+                  <button className="primary" onClick={() => addDay(day)}>Celý den do seznamu</button>
+                </div>
               )}
             </article>
           ))}

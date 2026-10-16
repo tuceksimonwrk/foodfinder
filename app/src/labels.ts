@@ -11,4 +11,4 @@ export const CATEGORY_LABELS: Record<Category, string> = {
 
 const SOURCE_LABELS: Record<Nutrition['source'], string> = { off: 'OFF', dictionary: 'slovník', override: 'ruční' };
 
-export const nutritionSourceLabel = (n: Nutrition) => `${SOURCE_LABELS[n.source]} · ${Math.round(n.confidence * 100)} %`;
+export const nutritionSourceLabel = (n: Nutrition) => `${SOURCE_LABELS[n.source]}, jistota ${Math.round(n.confidence * 100)} %`;
