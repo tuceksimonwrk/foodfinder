@@ -17,8 +17,8 @@ export function Thumb({ src, className = '' }: { src?: string; className?: strin
         <img
           src={src}
           alt=""
-          width={84}
-          height={84}
+          width={104}
+          height={104}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"

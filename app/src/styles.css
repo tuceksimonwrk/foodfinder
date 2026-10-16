@@ -202,17 +202,16 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 @media (min-width: 768px) { .podium { grid-template-columns: 1.25fr 1fr 1fr; align-items: stretch; } }
 .slab {
   --skew: 14px;
-  position: relative; overflow: hidden; padding: 10px 112px 10px 14px; min-height: 92px;
+  position: relative; overflow: hidden; padding: 10px 134px 10px 14px; min-height: 108px;
   display: flex; flex-direction: column; justify-content: center; gap: 2px;
   clip-path: polygon(0 0, 100% 0, calc(100% - var(--skew)) 100%, 0 100%);
   background: var(--surface); color: var(--text); border-left: 6px solid var(--text);
   animation: slab-in 0.55s var(--ease) both; animation-delay: calc(var(--i) * 90ms);
 }
-.slab.rank-1 { background: var(--accent); color: var(--on-accent); border-left-color: var(--on-accent); min-height: 116px; }
+.slab.rank-1 { background: var(--accent); color: var(--on-accent); border-left-color: var(--on-accent); min-height: 124px; }
 .slab.rank-2 { background: var(--ink); color: #fff; border-left-color: #fff; }
 @media (prefers-color-scheme: dark) { .slab.rank-2 { background: var(--surface-2); } }
 @keyframes slab-in { from { opacity: 0; transform: translateX(-28px); } }
-.slab-thumb { position: absolute; right: 30px; top: 50%; transform: translateY(-50%); width: 76px; height: 76px; z-index: 1; }
 .slab-rank {
   position: absolute; right: 18px; bottom: -14px; font: italic 800 96px/1 var(--font-display); opacity: 0.16; pointer-events: none;
 }
@@ -262,7 +261,7 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 .no-macros { margin-top: 6px; font-size: 14px; color: var(--muted); }
 
 .add {
-  margin-top: 8px; align-self: stretch; display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: auto; align-self: stretch; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .add.added { background: var(--good-fill); color: #fff; animation: pop 0.35s var(--ease); }
 @keyframes pop { 0% { transform: scale(0.94); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
@@ -343,15 +342,35 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
 .view-title { font: italic 800 30px/1 var(--font-display); margin-bottom: 12px; }
 
 /* ---------- product photos ---------- */
-.card-top { display: flex; gap: 12px; align-items: flex-start; }
+.card-top { display: flex; gap: 14px; align-items: flex-start; }
 .card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+/* The photo "stage": a light, slanted plate with a cut corner. White photo backgrounds melt into it (multiply),
+   so every product looks shot on the same table. The plate stays light in dark mode on purpose. */
 .thumb {
-  flex: none; width: 84px; height: 84px; border-radius: var(--radius); background: #fff;
-  border: 1.5px solid var(--line); display: grid; place-items: center; overflow: hidden;
+  --plate-a: #eef2f8;
+  --plate-b: #d8e1ed;
+  flex: none; position: relative; isolation: isolate; width: 104px; height: 104px;
+  display: grid; place-items: center; overflow: hidden;
+  background: linear-gradient(160deg, var(--plate-a), var(--plate-b));
+  border-radius: 4px; transform: skewX(-6deg);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
 }
-.thumb img { width: 100%; height: 100%; object-fit: contain; animation: thumb-in 0.35s var(--ease) both; }
-@keyframes thumb-in { from { opacity: 0; transform: scale(0.94); } }
-.thumb-fallback { color: #9aa8bd; display: grid; place-items: center; }
-.thumb-fallback svg { width: 34px; height: 34px; }
-.slab-thumb { width: 76px; height: 76px; border-color: transparent; }
-.slab-thumb img { width: 100%; height: 100%; }
+/* soft floor shadow under the product (a drop-shadow filter would outline opaque white backgrounds) */
+.thumb::after {
+  content: ''; position: absolute; left: 18%; right: 18%; bottom: 7px; height: 9px; z-index: 0;
+  background: radial-gradient(ellipse at center, rgba(14, 31, 61, 0.28), rgba(14, 31, 61, 0) 70%);
+}
+.thumb img {
+  position: relative; z-index: 1; width: 86%; height: 86%; object-fit: contain; mix-blend-mode: multiply;
+  transform: skewX(6deg); transition: transform 0.35s var(--ease);
+  animation: thumb-in 0.4s var(--ease) both;
+}
+@keyframes thumb-in { from { opacity: 0; } }
+@media (hover: hover) {
+  .card:hover .thumb img, .slab:hover .thumb img { transform: skewX(6deg) scale(1.07); }
+}
+.thumb-fallback { position: relative; z-index: 1; color: #9aa9be; display: grid; place-items: center; transform: skewX(6deg); }
+.thumb-fallback svg { width: 38px; height: 38px; }
+
+.slab-thumb { position: absolute; right: 26px; top: 50%; margin-top: -48px; width: 96px; height: 96px; z-index: 1; }
