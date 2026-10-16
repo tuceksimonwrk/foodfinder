@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import type { RawOffer, Store } from '@foodfinder/shared';
+import { toIsoDate as iso, type RawOffer, type Store } from '@foodfinder/shared';
 import type { Adapter } from './types';
 
 const BASE = 'https://www.kupi.cz';
@@ -37,7 +37,6 @@ const SHOP_PREFIXES: [string, Store][] = [
 
 const clean = (s: string) => s.replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
 const pad = (n: number) => String(n).padStart(2, '0');
-const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const DAY_MS = 86_400_000;
 
 /** Day/month without a year: pick the year that puts the date closest after (now − 180 days). */

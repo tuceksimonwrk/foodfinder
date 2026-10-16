@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { Offer, RawOffer } from '@foodfinder/shared';
+import { toIsoDate, type Offer, type RawOffer } from '@foodfinder/shared';
 import { adapters as defaultAdapters, type Adapter } from './adapters/index';
 import { normalizeOffer } from './normalize';
 import { lookupDictionary } from './nutrition/dictionary';
@@ -18,9 +18,6 @@ export interface BuildOptions {
 
 /** Below this share of the previous offer count the new data is considered suspicious. */
 const MIN_SHARE_OF_PREVIOUS = 0.5;
-
-const isoDate = (d: Date) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 function previousCount(outPath: string): number {
   if (!existsSync(outPath)) return 0;
@@ -41,7 +38,7 @@ export async function runBuild(opts: BuildOptions): Promise<{ count: number; wri
     }
   }
 
-  const today = isoDate(opts.now);
+  const today = toIsoDate(opts.now);
   const valid: Offer[] = raws.map(normalizeOffer).filter((o) => o.validTo >= today);
   const count = valid.length;
 
