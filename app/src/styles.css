@@ -1,4 +1,4 @@
-/* Fit leták – "Atletická dráha": navy ink, track orange, pitch green, yellow-card tags. */
+/* foodfinder – "Atletická dráha": navy ink, track orange, pitch green, yellow-card tags. */
 
 :root {
   --ink: #0e1f3d;
@@ -456,3 +456,8 @@ details.more-filters[open] summary::before { transform: rotate(45deg); }
   font: 800 15px/1 var(--font-display); font-style: italic; clip-path: polygon(7px 0, 100% 0, 100% 100%, 0 100%);
 }
 .deal-pct { margin-left: 6px; padding: 1px 6px; background: var(--tag); color: var(--on-tag); font: 800 13px/1.3 var(--font-display); font-style: italic; border-radius: 2px; white-space: nowrap; }
+
+/* Very narrow phones: the data timestamp would wrap into four lines next to the longer brand name. */
+@media (max-width: 359px) {
+  .freshness { display: none; }
+}

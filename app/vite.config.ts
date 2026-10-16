@@ -9,8 +9,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Fit leták',
-        short_name: 'Fit leták',
+        name: 'foodfinder',
+        short_name: 'foodfinder',
         description: 'Akční ceny, fit produkty a jídelníčky podle aktuálních letáků.',
         lang: 'cs',
         theme_color: '#0e1f3d',

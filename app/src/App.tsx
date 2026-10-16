@@ -121,7 +121,7 @@ export function App() {
     <>
       <header className="topbar">
         <div className="topbar-inner">
-          <h1 className="brand"><span className="brand-mark" aria-hidden="true" />Fit leták</h1>
+          <h1 className="brand"><span className="brand-mark" aria-hidden="true" />foodfinder</h1>
           <div className="topbar-actions">
             {data && (
               <div className={data.fromCache ? 'freshness offline' : 'freshness'}>

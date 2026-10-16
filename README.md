@@ -1,4 +1,4 @@
-# Fit leták
+# foodfinder
 
 Osobní PWA: akční ceny z letáků Lidl, Albert, Billa, Kaufland, Penny a Tesco, Fit režim
 (vysoké bílkoviny, nízký tuk), generátor fit jídelníčků a nákupní seznam.
